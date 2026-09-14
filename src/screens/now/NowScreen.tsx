@@ -84,7 +84,11 @@ export function NowScreen({ onOpenSupport }: NowScreenProps) {
 
   return (
     <View style={styles.root}>
-      <View style={styles.header}>
+      {/* 66px in the prototype = its fixed mockup device's 59px status-bar inset + 7px
+          breathing room (see TabScreen, which uses the same insets.top + 7 for the other four
+          tabs). A hardcoded 66 only matched the desktop web preview's faked 59px inset — on a
+          real phone it stacked on top of space the browser already reserves for the notch. */}
+      <View style={[styles.header, { paddingTop: insets.top + 7 }]}>
         <View style={styles.headerTopRow}>
           <View style={styles.headerTitleColumn}>
             <Text style={textStyle.largeTitle}>Right now</Text>
@@ -215,7 +219,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 66,
     paddingHorizontal: 16,
     paddingBottom: 12,
   },

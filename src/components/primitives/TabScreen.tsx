@@ -50,6 +50,14 @@ export function TabScreen({ title, children }: TabScreenProps) {
   };
 
   const bottomPadding = insets.bottom + TAB_CONTROL_ROW_HEIGHT + 16;
+  // 66px in the prototype = its fixed device mockup's 59px status-bar inset + 7px breathing
+  // room (see PushedScreenHeader, which reproduces the same 59+44 relationship for its own
+  // header row). insets.top + 7 generalizes that to whatever a given device actually reports —
+  // a hardcoded 66 only looked right on the desktop web preview, which fakes a 59px inset to
+  // match that same mockup; on a real phone (a different inset, often smaller) it stacked on
+  // top of space the browser already reserves for the notch/Dynamic Island itself, pushing the
+  // title further down than intended.
+  const topPadding = insets.top + 7;
 
   return (
     <View style={styles.root}>
@@ -58,7 +66,7 @@ export function TabScreen({ title, children }: TabScreenProps) {
         scrollEventThrottle={32}
         contentContainerStyle={[
           styles.content,
-          { paddingBottom: bottomPadding },
+          { paddingTop: topPadding, paddingBottom: bottomPadding },
         ]}
       >
         {children}
@@ -74,7 +82,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.canvas,
   },
   content: {
-    paddingTop: 66,
     paddingHorizontal: spacing.screenGutter,
   },
   header: {
