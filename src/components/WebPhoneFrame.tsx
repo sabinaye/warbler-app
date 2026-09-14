@@ -12,8 +12,10 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
   document.body.style.backgroundColor = color.canvas;
 }
 
-const FRAME_MAX_WIDTH = 430;
-const FRAME_MAX_HEIGHT = 900;
+// Matches the README's actual reference device ("designed at 393 × 852, iPhone 15/16 logical
+// size") rather than a rounder, wider guess.
+const FRAME_MAX_WIDTH = 393;
+const FRAME_MAX_HEIGHT = 852;
 // Below this viewport width we're looking at an actual phone browser, not a desktop one — the
 // app already fills the screen correctly there, so don't frame it.
 const FRAME_THRESHOLD_WIDTH = 500;
