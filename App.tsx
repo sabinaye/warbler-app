@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import {
@@ -62,12 +61,10 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.root}>
       <WebPhoneFrame>
-        <SafeAreaProvider>
-          <ErrorBoundary>
-            {setupComplete ? <RootTabs /> : <OnboardingFlow onComplete={handleOnboardingComplete} />}
-          </ErrorBoundary>
-          <StatusBar style="dark" />
-        </SafeAreaProvider>
+        <ErrorBoundary>
+          {setupComplete ? <RootTabs /> : <OnboardingFlow onComplete={handleOnboardingComplete} />}
+        </ErrorBoundary>
+        <StatusBar style="dark" />
       </WebPhoneFrame>
     </GestureHandlerRootView>
   );
