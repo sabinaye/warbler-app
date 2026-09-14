@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaFrameContext, SafeAreaInsetsContext, SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { color } from '../theme/tokens';
 import { useBatteryLevel } from '../hooks/useBatteryLevel';
@@ -100,14 +100,18 @@ export function WebPhoneFrame({ children }: WebPhoneFrameProps) {
   return (
     <View style={styles.backdrop}>
       <View style={[styles.frame, { width: FRAME_WIDTH, height: FRAME_HEIGHT, transform: [{ scale }] }]}>
-        <SafeAreaProvider
-          initialMetrics={{
-            insets: SAFE_AREA_INSETS,
-            frame: { x: 0, y: 0, width: FRAME_WIDTH, height: FRAME_HEIGHT },
-          }}
-        >
-          {children}
-        </SafeAreaProvider>
+        {/*
+          react-native-safe-area-context's own <SafeAreaProvider> re-measures real CSS
+          env(safe-area-inset-*) on mount (0 on an ordinary browser, no matter what
+          `initialMetrics` said) and overwrites it within the same tick — so seeding it there
+          only ever held for one frame. Supplying the contexts directly skips that measurement
+          entirely and makes the fake insets stick.
+        */}
+        <SafeAreaInsetsContext.Provider value={SAFE_AREA_INSETS}>
+          <SafeAreaFrameContext.Provider value={{ x: 0, y: 0, width: FRAME_WIDTH, height: FRAME_HEIGHT }}>
+            {children}
+          </SafeAreaFrameContext.Provider>
+        </SafeAreaInsetsContext.Provider>
 
         <View style={styles.statusBar} pointerEvents="none">
           <Text style={styles.clockText}>{clock}</Text>
