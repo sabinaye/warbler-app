@@ -69,7 +69,11 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    // Bottom-aligned, not centered: with a real safe-area top inset the container is taller
+    // than the 44px control row, and the control row sits at the bottom of it (matching the
+    // source design's `align-items:flex-end`) — centering only looked right by coincidence
+    // while insets were stuck at 0 and the container height equalled the row height exactly.
+    alignItems: 'flex-end',
     paddingHorizontal: 8,
     paddingBottom: 4,
   },
@@ -94,6 +98,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+    bottom: 4,
     height: touchTarget.min,
     alignItems: 'center',
     justifyContent: 'center',

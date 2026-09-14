@@ -236,7 +236,9 @@ const styles = StyleSheet.create({
   },
   connectionPill: {
     minHeight: touchTarget.min,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   connectionPillPressed: {
     opacity: 0.5,
