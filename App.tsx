@@ -26,7 +26,7 @@ const TOUR_START_DELAY_MS = 700;
 // fonts + hydration usually resolve fast enough that the JS-rendered splash below would otherwise
 // flash for a frame or two, easy to miss entirely. Holding it for a minimum stretch makes it an
 // actual, perceptible screen there, matching what a native launch splash looks like.
-const WEB_SPLASH_MIN_MS = 900;
+const WEB_SPLASH_MIN_MS = 4000;
 
 export default function App() {
   const [fontsLoaded] = useFonts({
