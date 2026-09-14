@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#E7E3D6; -webkit-font-smoothing:antialiased; }
+  a { color:#2A7BA4; text-decoration:none; }
+  a:hover { color:#1F6C94; }
+  ::-webkit-scrollbar { width:0; height:0; }
+  input, textarea, button { font-family:inherit; }
+  @keyframes wbFade { from { opacity:0; transform:translateY(8px);} to { opacity:1; transform:none;} }
+  @keyframes wbRise { from { opacity:0; transform:translateY(12px);} to { opacity:1; transform:none;} }
+  @keyframes wbPush { from { transform:translateX(100%);} to { transform:translateX(0);} }
+  @keyframes wbSheet { from { transform:translateY(100%);} to { transform:translateY(0);} }
+  @keyframes wbKb { from { transform:translateY(100%);} to { transform:translateY(0);} }
+  @keyframes wbDim { from { opacity:0;} to { opacity:1;} }
+  @keyframes wbAlert { from { opacity:0; transform:scale(1.14);} to { opacity:1; transform:scale(1);} }
+  @keyframes wbBob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-5px);} }
+  @keyframes wbDot { 0%,60%,100% { opacity:.25; transform:translateY(0);} 30% { opacity:1; transform:translateY(-3px);} }
+  @keyframes wbToast { 0% { opacity:0; transform:translateY(-12px);} 10% { opacity:1; transform:none;} 90% { opacity:1; transform:none;} 100% { opacity:0; transform:translateY(-12px);} }
+  @keyframes wbSpin { to { transform:rotate(360deg);} }
+  @keyframes wbRing { from { stroke-dashoffset:339;} }
+  @media (max-width: 480px) {
+    html, body { background:#FDFAEA; height:100%; }
+    #wb-stage { padding:0 !important; min-height:100dvh !important; }
+    #wb-device { width:100vw !important; height:100dvh !important; border-radius:0 !important; border:0 !important; box-shadow:none !important; }
+    #wb-screen { border-radius:0 !important; }
+  }
+</style>
+</helmet>
+
+<div id="wb-stage" style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px 16px; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;">
+  <div id="wb-device" style="position:relative; width:393px; height:852px; border-radius:56px; background:#0E1C24; border:3px solid #0E1C24; box-shadow:0 30px 70px -20px rgba(22,50,63,.45), 0 0 0 1px rgba(255,255,255,.06) inset; flex:none;">
+    <div id="wb-screen" style="position:absolute; inset:0; border-radius:53px; overflow:hidden; background:#FDFAEA; isolation:isolate;">
+
+      <div style="position:absolute; top:0; left:0; right:0; height:59px; z-index:90; display:flex; align-items:center; justify-content:space-between; padding:0 30px; pointer-events:none;">
+        <div style="font-size:17px; font-weight:600; letter-spacing:-.2px; color:#16323F; font-variant-numeric:tabular-nums; width:54px;">{{ clock }}</div>
+        <div style="width:126px; height:37px; border-radius:19px; background:#000; margin-top:2px;"></div>
+        <div style="display:flex; align-items:center; gap:5px; width:54px; justify-content:flex-end;">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="#16323F" aria-hidden="true"><rect x="0" y="7.5" width="3" height="3.5" rx="1"></rect><rect x="4.6" y="5.4" width="3" height="5.6" rx="1"></rect><rect x="9.2" y="3" width="3" height="8" rx="1"></rect><rect x="13.8" y="0" width="3" height="11" rx="1" opacity=".3"></rect></svg>
+          <div style="display:flex; align-items:center; gap:2px;">
+            <div style="width:22px; height:11px; border-radius:3px; border:1px solid rgba(22,50,63,.4); padding:1.5px; box-sizing:border-box;">
+              <div style="width:18%; height:100%; border-radius:1.5px; background:#C86A12;"></div>
+            </div>
+            <div style="width:1.5px; height:4px; border-radius:0 1px 1px 0; background:rgba(22,50,63,.4);"></div>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{ isOnboard }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:#FDFAEA; z-index:20;">
+          <div style="flex:none; height:59px;"></div>
+          <div style="flex:none; height:44px; padding:0 8px; display:flex; align-items:center; gap:8px;">
+            <div onClick="{{ onboardBack }}" role="button" aria-label="Back" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="opacity:.4">
+              <sc-if value="{{ canGoBack }}" hint-placeholder-val="{{ true }}">
+                <svg width="12" height="20" viewBox="0 0 12 20" fill="none" aria-hidden="true"><path d="M10 2 2 10l8 8" stroke="#2A7BA4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </sc-if>
+            </div>
+            <div style="flex:1; display:flex; gap:6px; align-items:center; justify-content:center;">
+              <div style="width:26px; height:4px; border-radius:2px; background:#2A7BA4;"></div>
+              <div style="width:26px; height:4px; border-radius:2px; background:#2A7BA4; opacity:{{ step1Op }};"></div>
+              <div style="width:26px; height:4px; border-radius:2px; background:#2A7BA4; opacity:{{ step2Op }};"></div>
+            </div>
+            <div style="width:44px;"></div>
+          </div>
+
+          <div style="flex:1; overflow-y:auto; padding:0 16px;">
+            <sc-if value="{{ isStep0 }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding-top:32px; animation:wbRise .4s ease both;">
+                <div style="width:196px; animation:wbBob 4.5s ease-in-out infinite;">
+                  <img src="assets/woby-hero.png" alt="Woby, a small blue bird in a straw hat" style="width:100%; display:block;">
+                </div>
+                <h1 style="font-family:Poppins,sans-serif; font-size:34px; line-height:41px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:24px 0 0;">Hi, I'm Woby.</h1>
+                <p style="font-size:17px; line-height:22px; color:#5F7683; margin:12px 0 0; max-width:296px; text-wrap:pretty;">I'll hold the details of your trip so you don't have to. When you're not sure what's next, ask me and I'll lay out a few good options.</p>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:24px 0 0; max-width:296px; text-wrap:pretty;">I can't promise nothing will go wrong. I can help you feel prepared and supported when it does.</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ false }}">
+              <div style="padding-top:16px; animation:wbRise .3s ease both;">
+                <h1 style="font-family:Poppins,sans-serif; font-size:28px; line-height:34px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0;">Where are you headed?</h1>
+                <p style="font-size:15px; line-height:20px; color:#5F7683; margin:8px 0 24px;">So I know the trains, the money and the time zone.</p>
+                <div style="background:#fff; border-radius:10px; overflow:hidden;">
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:17px; line-height:22px; color:#16323F;">Destination</span>
+                    <input value="{{ city }}" onChange="{{ onCity }}" aria-label="Destination" style="flex:1; min-width:0; border:0; outline:0; background:transparent; text-align:right; font-size:17px; color:#2A7BA4;">
+                  </div>
+                  <div style="height:0.5px; background:rgba(22,50,63,.18); margin-left:16px;"></div>
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; justify-content:space-between;">
+                    <span style="font-size:17px; line-height:22px; color:#16323F;">Dates</span>
+                    <span style="font-size:17px; color:#5F7683;">14–23 Mar</span>
+                  </div>
+                  <div style="height:0.5px; background:rgba(22,50,63,.18); margin-left:16px;"></div>
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; justify-content:space-between;">
+                    <span style="font-size:17px; line-height:22px; color:#16323F;">Travelling</span>
+                    <span style="font-size:17px; color:#5F7683;">Solo</span>
+                  </div>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 16px 0; text-wrap:pretty;">Your trip stays on this phone. I only send what you tap send on.</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+              <div style="padding-top:16px; animation:wbRise .3s ease both;">
+                <h1 style="font-family:Poppins,sans-serif; font-size:28px; line-height:34px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0;">Who should I keep in the loop?</h1>
+                <p style="font-size:15px; line-height:20px; color:#5F7683; margin:8px 0 24px;">Just one person. I'll only reach out when you ask me to.</p>
+                <div style="background:#fff; border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px;">
+                  <div style="width:44px; height:44px; border-radius:22px; background:#A7CADD; display:flex; align-items:center; justify-content:center; font-size:19px; font-weight:600; color:#16323F; flex:none;">P</div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:17px; line-height:22px; color:#16323F;">Priya Raman</div>
+                    <div style="font-size:15px; line-height:20px; color:#5F7683;">Sister · +44 7700 900412</div>
+                  </div>
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="flex:none;" aria-hidden="true"><circle cx="11" cy="11" r="11" fill="#2A7BA4"></circle><path d="M6 11.4 9.4 14.6 16 7.8" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 16px 24px; text-wrap:pretty;">Your location stays off until you choose to share it — and you decide how long for.</p>
+                <div style="background:#fff; border-radius:10px; min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:17px; line-height:22px; color:#16323F;">Keep working offline</div>
+                    <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px;">Timetables and your plan cached on device.</div>
+                  </div>
+                  <div onClick="{{ toggleOffline }}" role="switch" aria-label="Keep working offline" style="width:51px; height:31px; border-radius:16px; background:{{ offlineTrackBg }}; position:relative; cursor:pointer; transition:background .25s ease; flex:none;">
+                    <div style="position:absolute; top:2px; left:{{ offlineKnobLeft }}; width:27px; height:27px; border-radius:14px; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.18); transition:left .25s cubic-bezier(.2,.8,.2,1);"></div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="flex:none; padding:8px 16px 34px;">
+            <div onClick="{{ onboardNext }}" role="button" style="height:50px; border-radius:12px; background:#2A7BA4; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#1F6C94">
+              <span style="font-size:17px; font-weight:600; color:#fff;">{{ onboardCta }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isNow }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; top:0; left:0; right:0; bottom:{{ nowBottom }}; display:flex; flex-direction:column; background:#FDFAEA; z-index:10;">
+          <div style="flex:none; padding:66px 16px 12px;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+              <div style="min-width:0;">
+                <h1 style="font-family:Poppins,sans-serif; font-size:34px; line-height:41px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0;">Right now</h1>
+                <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:6px;">Osaka · night 4 of 9</div>
+              </div>
+              <div onClick="{{ goSafety }}" role="button" aria-label="Connection status" style="min-height:44px; display:flex; align-items:center; cursor:pointer; flex:none;" style-active="opacity:.5">
+                <div style="height:32px; padding:0 12px; border-radius:16px; background:#fff; display:flex; align-items:center; gap:6px; box-shadow:0 1px 2px rgba(22,50,63,.08);">
+                  <div style="width:7px; height:7px; border-radius:4px; background:#C86A12;"></div>
+                  <span style="font-size:13px; line-height:18px; font-weight:600; color:#16323F;">Offline</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:20px; overflow-x:auto; padding-bottom:4px;">
+              <div style="flex:none; height:32px; padding:0 12px 0 10px; border-radius:16px; background:rgba(200,106,18,.14); display:flex; align-items:center; gap:6px;">
+                <div style="width:6px; height:6px; border-radius:3px; background:#A8590C;"></div>
+                <span style="font-size:13px; line-height:18px; font-weight:600; color:#A8590C; white-space:nowrap;">18% battery</span>
+              </div>
+              <div style="flex:none; height:32px; padding:0 12px; border-radius:16px; background:rgba(167,202,221,.45); display:flex; align-items:center; font-size:13px; line-height:18px; font-weight:500; color:#16323F; white-space:nowrap;">€62 left today</div>
+              <div style="flex:none; height:32px; padding:0 12px; border-radius:16px; background:rgba(167,202,221,.45); display:flex; align-items:center; font-size:13px; line-height:18px; font-weight:500; color:#16323F; white-space:nowrap;">2.4 km from your stay</div>
+              <div style="flex:none; height:32px; padding:0 12px; border-radius:16px; background:rgba(167,202,221,.45); display:flex; align-items:center; font-size:13px; line-height:18px; font-weight:500; color:#16323F; white-space:nowrap;">11°C, clear</div>
+            </div>
+          </div>
+
+          <div ref="{{ scrollRef }}" style="flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:8px 16px 8px;">
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:32px 24px;">
+                <img src="assets/woby-hero.png" alt="" style="width:112px; opacity:.9;">
+                <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F; margin-top:16px;">Nothing needs you right now</div>
+                <p style="font-size:15px; line-height:20px; color:#5F7683; margin:4px 0 0; max-width:260px; text-wrap:pretty;">When something comes up, tell me what's happening and I'll lay out your options.</p>
+              </div>
+            </sc-if>
+
+            <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="2">
+              <div style="margin-bottom:16px; animation:wbFade .3s ease both;">
+                <sc-if value="{{ m.fromMe }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; justify-content:flex-end;">
+                    <div style="max-width:80%; background:#2A7BA4; border-radius:20px 20px 6px 20px; padding:10px 16px;">
+                      <p style="margin:0; font-size:17px; line-height:22px; color:#fff; text-wrap:pretty;">{{ m.text }}</p>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ m.fromWoby }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex; gap:8px; align-items:flex-start;">
+                    <div role="img" aria-label="Woby" style="width:40px; height:46px; flex:none; margin-top:2px; background-image:{{ m.faceBg }}; background-size:contain; background-repeat:no-repeat; background-position:center bottom;"></div>
+                    <div style="min-width:0; flex:1;">
+                      <div style="display:inline-block; max-width:100%; background:#fff; border-radius:20px 20px 20px 6px; padding:10px 16px; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                        <p style="margin:0; font-size:17px; line-height:22px; color:#16323F; text-wrap:pretty;">{{ m.text }}</p>
+                      </div>
+                      <sc-if value="{{ m.hasOptions }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                          <sc-for list="{{ m.options }}" as="o" hint-placeholder-count="3">
+                            <div onClick="{{ o.onTap }}" onPointerDown="{{ o.onHold }}" onPointerUp="{{ o.onRelease }}" onPointerLeave="{{ o.onRelease }}" role="button" style="background:#fff; border-radius:12px; padding:12px 16px; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07); border:1.5px solid {{ o.border }}; animation:wbRise .35s ease both; transition:transform .15s ease;" style-active="transform:scale(.975)">
+                              <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px;">
+                                <span style="font-size:17px; line-height:22px; font-weight:600; color:#16323F; letter-spacing:-.2px;">{{ o.title }}</span>
+                                <span style="font-size:17px; font-weight:600; color:#16323F; font-variant-numeric:tabular-nums; flex:none;">{{ o.price }}</span>
+                              </div>
+                              <div style="font-size:13px; line-height:18px; font-weight:600; color:#2A7BA4; margin-top:2px;">{{ o.meta }}</div>
+                              <p style="margin:6px 0 0; font-size:15px; line-height:20px; color:#5F7683; text-wrap:pretty;">{{ o.why }}</p>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+
+            <sc-if value="{{ thinking }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; gap:8px; align-items:flex-start; margin-bottom:16px;">
+                <img src="assets/woby-hero.png" alt="" style="width:40px; flex:none;">
+                <div style="background:#fff; border-radius:20px 20px 20px 6px; padding:15px 16px; display:flex; gap:5px; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <div style="width:7px; height:7px; border-radius:4px; background:#71ABCB; animation:wbDot 1.2s ease-in-out infinite;"></div>
+                  <div style="width:7px; height:7px; border-radius:4px; background:#71ABCB; animation:wbDot 1.2s ease-in-out .18s infinite;"></div>
+                  <div style="width:7px; height:7px; border-radius:4px; background:#71ABCB; animation:wbDot 1.2s ease-in-out .36s infinite;"></div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ offlineNotice }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:0 0 16px 48px; display:flex; align-items:center; gap:10px; background:rgba(200,106,18,.1); border-radius:12px; padding:10px 14px;">
+                <div style="flex:1; min-width:0; font-size:13px; line-height:18px; color:#8A4C10; text-wrap:pretty;">No connection, so this is from what I've saved on your phone.</div>
+                <div onClick="{{ retry }}" role="button" style="flex:none; font-size:15px; font-weight:600; color:#2A7BA4; cursor:pointer; padding:4px;" style-active="opacity:.5">Retry</div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="flex:none; background:#FDFAEA;">
+            <div style="display:flex; gap:8px; overflow-x:auto; padding:4px 16px 10px;">
+              <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3">
+                <div onClick="{{ c.onTap }}" role="button" style="flex:none; height:38px; padding:0 16px; border-radius:19px; background:#fff; border:1px solid rgba(113,171,203,.5); display:flex; align-items:center; cursor:pointer;" style-active="background:rgba(167,202,221,.45)">
+                  <span style="font-size:15px; font-weight:500; color:#2A7BA4; white-space:nowrap;">{{ c.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex; align-items:flex-end; gap:8px; padding:0 16px 20px;">
+              <div onClick="{{ openKb }}" style="flex:1; min-height:44px; display:flex; align-items:flex-end; background:#fff; border-radius:22px; padding:0 6px 0 16px; box-shadow:0 1px 2px rgba(22,50,63,.07); cursor:text;">
+                <textarea value="{{ draft }}" rows="1" readonly aria-label="Message Woby" placeholder="Tell Woby what's happening" style="flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:17px; line-height:22px; color:#16323F; resize:none; padding:11px 0; margin:0; max-height:110px; overflow-y:auto; cursor:text;"></textarea>
+                <div onClick="{{ send }}" role="button" aria-label="Send" style="width:32px; height:32px; border-radius:16px; background:{{ sendBg }}; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; margin-bottom:6px; transition:background .2s ease;" style-active="opacity:.7">
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M7.5 13V2M7.5 2 3 6.6M7.5 2l4.5 4.6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+              </div>
+              <div onClick="{{ mic }}" role="button" aria-label="Dictate" style="width:44px; height:44px; border-radius:22px; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="background:rgba(167,202,221,.45)">
+                <svg width="17" height="21" viewBox="0 0 17 21" fill="none" aria-hidden="true"><rect x="5.5" y="1" width="6" height="11" rx="3" fill="#2A7BA4"></rect><path d="M2 9.5a6.5 6.5 0 0 0 13 0M8.5 16v4" stroke="#2A7BA4" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPlan }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:10; background:#FDFAEA;">
+          <div style="position:absolute; top:0; left:0; right:0; height:103px; z-index:20; background:rgba(253,250,234,.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:0.5px solid rgba(22,50,63,.18); display:flex; align-items:flex-end; justify-content:center; padding-bottom:11px; opacity:{{ navOp }}; transition:opacity .2s ease; pointer-events:none;">
+            <span style="font-size:17px; font-weight:600; color:#16323F;">Plan</span>
+          </div>
+          <div onScroll="{{ onPlanScroll }}" onPointerDown="{{ pullStart }}" onPointerMove="{{ pullMove }}" onPointerUp="{{ pullEnd }}" onPointerCancel="{{ pullEnd }}" style="position:absolute; inset:0; overflow-y:auto; padding-bottom:99px;">
+            <div style="height:{{ pullH }}; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="animation:wbSpin .8s linear infinite;" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="rgba(22,50,63,.15)" stroke-width="2.5"></circle><path d="M10 2a8 8 0 0 1 8 8" stroke="#2A7BA4" stroke-width="2.5" stroke-linecap="round"></path></svg>
+            </div>
+            <div style="padding:66px 16px 0;">
+              <h1 style="font-family:Poppins,sans-serif; font-size:34px; line-height:41px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0;">Plan</h1>
+              <p style="font-size:15px; line-height:20px; color:#5F7683; margin:4px 0 0;">Thursday 17 March · Osaka</p>
+            </div>
+            <div style="padding:24px 16px 0;">
+              <div onClick="{{ pushPrep }}" role="button" style="background:#fff; border-radius:12px; padding:14px 16px; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="background:rgba(167,202,221,.3)">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F;">Trip prep</div>
+                    <div style="font-size:15px; line-height:20px; color:#5F7683; margin-top:2px;">{{ prepSummary }}</div>
+                  </div>
+                  <svg width="8" height="13" viewBox="0 0 8 13" fill="none" style="flex:none;" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5l-5 5" stroke="rgba(22,50,63,.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div style="height:6px; border-radius:3px; background:rgba(22,50,63,.08); margin-top:12px; overflow:hidden;">
+                  <div style="height:100%; width:{{ prepPct }}; border-radius:3px; background:#2A7BA4; transition:width .4s cubic-bezier(.2,.8,.2,1);"></div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:24px 16px 0;">
+              <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:0 0 8px;">Tonight</div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <sc-for list="{{ plan }}" as="p" hint-placeholder-count="3">
+                  <div style="position:relative; border-radius:12px; overflow:hidden;">
+                    <div style="position:absolute; inset:0; display:flex; justify-content:flex-end;">
+                      <div onClick="{{ p.onRemove }}" role="button" style="width:88px; background:#D92B1F; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="opacity:.8">
+                        <span style="font-size:15px; font-weight:600; color:#fff;">Remove</span>
+                      </div>
+                    </div>
+                    <div onPointerDown="{{ p.onDown }}" onPointerMove="{{ p.onMove }}" onPointerUp="{{ p.onUp }}" onPointerCancel="{{ p.onUp }}" onClick="{{ p.onTap }}" style="position:relative; background:#fff; border-radius:12px; padding:12px 16px; display:flex; gap:12px; box-shadow:0 1px 2px rgba(22,50,63,.07); transform:translateX({{ p.x }}); transition:transform .22s cubic-bezier(.2,.8,.2,1); cursor:pointer; touch-action:pan-y;">
+                      <div style="width:52px; flex:none;">
+                        <div style="font-size:15px; line-height:20px; font-weight:600; color:{{ p.statusInk }}; font-variant-numeric:tabular-nums;">{{ p.time }}</div>
+                        <div style="font-size:13px; line-height:18px; color:#8196A1;">{{ p.dur }}</div>
+                      </div>
+                      <div style="flex:1; min-width:0;">
+                        <div style="display:flex; align-items:flex-start; gap:8px;">
+                          <div style="flex:1; min-width:0; font-size:17px; line-height:22px; font-weight:600; color:#16323F; letter-spacing:-.2px; text-wrap:pretty;">{{ p.title }}</div>
+                          <div style="flex:none; display:flex; align-items:center; gap:5px; height:22px; padding:0 9px 0 7px; border-radius:11px; background:{{ p.statusBg }}; margin-top:1px;">
+                            <div style="width:6px; height:6px; border-radius:3px; background:{{ p.statusInk }};"></div>
+                            <span style="font-size:12px; line-height:16px; font-weight:600; color:{{ p.statusInk }}; white-space:nowrap;">{{ p.status }}</span>
+                          </div>
+                        </div>
+                        <div style="font-size:15px; line-height:20px; color:#5F7683; margin-top:2px; text-wrap:pretty;">{{ p.sub }}</div>
+                        <sc-if value="{{ p.byWoby }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:inline-flex; align-items:center; gap:6px; margin-top:8px; height:26px; padding:0 10px 0 4px; border-radius:13px; background:rgba(167,202,221,.45);">
+                            <img src="assets/woby-happy.png" alt="" style="height:20px;">
+                            <span style="font-size:13px; line-height:18px; font-weight:600; color:#16323F;">Woby added this</span>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0;">Swipe a row to remove it.</p>
+            </div>
+            <div style="padding:24px 16px 0;">
+              <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:0 0 8px;">Tomorrow</div>
+              <div style="background:#fff; border-radius:12px; padding:12px 16px; display:flex; gap:12px; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                <div style="width:52px; flex:none;">
+                  <div style="font-size:15px; line-height:20px; font-weight:600; color:#16323F; font-variant-numeric:tabular-nums;">10:00</div>
+                  <div style="font-size:13px; line-height:18px; color:#8196A1;">all day</div>
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="display:flex; align-items:flex-start; gap:8px;">
+                    <div style="flex:1; min-width:0; font-size:17px; line-height:22px; font-weight:600; color:#16323F; letter-spacing:-.2px;">Nara, slowly</div>
+                    <div style="flex:none; display:flex; align-items:center; gap:5px; height:22px; padding:0 9px 0 7px; border-radius:11px; background:rgba(42,123,164,.14); margin-top:1px;">
+                      <div style="width:6px; height:6px; border-radius:3px; background:#2A7BA4;"></div>
+                      <span style="font-size:12px; line-height:16px; font-weight:600; color:#2A7BA4; white-space:nowrap;">Rescheduled</span>
+                    </div>
+                  </div>
+                  <div style="font-size:15px; line-height:20px; color:#5F7683; margin-top:2px;">Moved from 07:00 so you can start the day rested.</div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:24px 16px 0;">
+              <div style="background:rgba(167,202,221,.35); border-radius:12px; padding:16px; display:flex; gap:12px;">
+                <img src="assets/woby-sing.png" alt="" style="width:44px; flex:none; align-self:flex-start;">
+                <p style="margin:0; font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">Tomorrow starts at 10 instead of 7 — a little more sleep, and Nara is just as lovely later in the morning.</p>
+              </div>
+            </div>
+            <div style="padding:24px 16px 0;">
+              <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:0 0 8px;">When you're home</div>
+              <div onClick="{{ pushReflect }}" role="button" style="background:#fff; border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="background:rgba(167,202,221,.3)">
+                <img src="assets/woby-love.png" alt="" style="width:36px; flex:none;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F;">Look back on the trip</div>
+                  <div style="font-size:15px; line-height:20px; color:#5F7683; margin-top:2px; text-wrap:pretty;">Five questions, about a minute. Opens on the 23rd — have a look now if you like.</div>
+                </div>
+                <svg width="8" height="13" viewBox="0 0 8 13" fill="none" style="flex:none;" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5l-5 5" stroke="rgba(22,50,63,.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isMoney }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:10; background:#FDFAEA;">
+          <div style="position:absolute; top:0; left:0; right:0; height:103px; z-index:20; background:rgba(253,250,234,.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:0.5px solid rgba(22,50,63,.18); display:flex; align-items:flex-end; justify-content:center; padding-bottom:11px; opacity:{{ navOp }}; transition:opacity .2s ease; pointer-events:none;">
+            <span style="font-size:17px; font-weight:600; color:#16323F;">Money</span>
+          </div>
+          <div onScroll="{{ onPlanScroll }}" style="position:absolute; inset:0; overflow-y:auto; padding-bottom:99px;">
+            <div style="padding:66px 16px 0;">
+              <h1 style="font-family:Poppins,sans-serif; font-size:34px; line-height:41px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0;">Money</h1>
+              <p style="font-size:15px; line-height:20px; color:#5F7683; margin:4px 0 0;">5 days left of 9</p>
+            </div>
+            <div style="padding:16px 16px 0;">
+              <div style="height:32px; border-radius:9px; background:rgba(22,50,63,.07); padding:2px; display:flex; gap:2px;">
+                <div onClick="{{ segToday }}" role="button" style="flex:1; border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:{{ segTodayBg }}; box-shadow:{{ segTodayShadow }}; transition:background .2s ease;">
+                  <span style="font-size:13px; font-weight:600; color:#16323F;">Today</span>
+                </div>
+                <div onClick="{{ segTrip }}" role="button" style="flex:1; border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:{{ segTripBg }}; box-shadow:{{ segTripShadow }}; transition:background .2s ease;">
+                  <span style="font-size:13px; font-weight:600; color:#16323F;">Whole trip</span>
+                </div>
+              </div>
+            </div>
+            <div style="padding:24px 16px 0; display:flex; justify-content:center;">
+              <div style="position:relative; width:180px; height:180px;">
+                <svg width="180" height="180" viewBox="0 0 120 120" aria-hidden="true">
+                  <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(167,202,221,.45)" stroke-width="11"></circle>
+                  <circle cx="60" cy="60" r="54" fill="none" stroke="{{ ringInk }}" stroke-width="11" stroke-linecap="round" stroke-dasharray="339" stroke-dashoffset="{{ ringOffset }}" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1), stroke .3s ease;"></circle>
+                </svg>
+                <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                  <div style="font-family:Poppins,sans-serif; font-size:34px; font-weight:600; color:#16323F; letter-spacing:-1px;">{{ ringAmount }}</div>
+                  <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px;">{{ ringCaption }}</div>
+                  <div style="display:flex; align-items:center; gap:5px; height:22px; padding:0 9px 0 7px; border-radius:11px; background:{{ ringPillBg }}; margin-top:8px;">
+                    <div style="width:6px; height:6px; border-radius:3px; background:{{ ringInk }};"></div>
+                    <span style="font-size:12px; line-height:16px; font-weight:600; color:{{ ringInk }}; white-space:nowrap;">{{ ringStatus }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:24px 16px 0;">
+              <div style="background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                <sc-for list="{{ spend }}" as="s" hint-placeholder-count="4">
+                  <div>
+                    <div style="height:0.5px; background:{{ s.sep }}; margin-left:16px;"></div>
+                    <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                      <div style="width:10px; height:10px; border-radius:5px; background:{{ s.dot }}; flex:none;"></div>
+                      <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">{{ s.label }}</span>
+                      <span style="font-size:17px; font-weight:600; color:{{ s.ink }}; font-variant-numeric:tabular-nums;">{{ s.amount }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:24px 16px 0;">
+              <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:0 0 8px;">What Woby changed</div>
+              <div style="background:#fff; border-radius:12px; padding:12px 16px; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                <div style="display:flex; gap:12px; align-items:flex-start;">
+                  <img src="assets/woby-happy.png" alt="" style="width:36px; flex:none;">
+                  <p style="margin:0; flex:1; min-width:0; font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">Moved two dinners to konbini nights and kept the kaiseki booking on the 21st — that one felt worth protecting.</p>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                  <div onClick="{{ keepChanges }}" role="button" style="height:34px; padding:0 14px; border-radius:17px; background:#2A7BA4; display:flex; align-items:center; cursor:pointer;" style-active="background:#1F6C94"><span style="font-size:15px; font-weight:600; color:#fff;">Keep it</span></div>
+                  <div onClick="{{ undoChanges }}" role="button" style="height:34px; padding:0 14px; border-radius:17px; background:rgba(167,202,221,.45); display:flex; align-items:center; cursor:pointer;" style-active="opacity:.6"><span style="font-size:15px; font-weight:600; color:#16323F;">Undo</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isNearby }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:10; background:#FDFAEA;">
+          <div style="position:absolute; top:0; left:0; right:0; height:103px; z-index:20; background:rgba(253,250,234,.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:0.5px solid rgba(22,50,63,.18); display:flex; align-items:flex-end; justify-content:center; padding-bottom:11px; opacity:{{ navOp }}; transition:opacity .2s ease; pointer-events:none;">
+            <span style="font-size:17px; font-weight:600; color:#16323F;">Nearby</span>
+          </div>
+          <div onScroll="{{ onPlanScroll }}" style="position:absolute; inset:0; overflow-y:auto; padding-bottom:99px;">
+            <div style="padding:66px 16px 12px;">
+              <h1 style="font-family:Poppins,sans-serif; font-size:34px; line-height:41px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0;">Nearby</h1>
+              <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:6px;">Namba, Osaka · saved on your phone</div>
+            </div>
+            <div style="padding:8px 16px 0;">
+              <div style="height:32px; border-radius:9px; background:rgba(22,50,63,.07); padding:2px; display:flex; gap:2px;">
+                <div onClick="{{ nearAnswers }}" role="button" style="flex:1; border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:{{ nearAnswersBg }}; box-shadow:{{ nearAnswersShadow }}; transition:background .2s ease;">
+                  <span style="font-size:13px; font-weight:600; color:#16323F;">Answers</span>
+                </div>
+                <div onClick="{{ nearGuides }}" role="button" style="flex:1; border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:{{ nearGuidesBg }}; box-shadow:{{ nearGuidesShadow }}; transition:background .2s ease;">
+                  <span style="font-size:13px; font-weight:600; color:#16323F;">Guides</span>
+                </div>
+              </div>
+            </div>
+
+            <sc-if value="{{ isAnswersTab }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <div style="padding:20px 16px 0; display:flex; flex-direction:column; gap:8px;">
+                  <sc-for list="{{ answers }}" as="a" hint-placeholder-count="3">
+                    <div onClick="{{ a.onTap }}" role="button" style="background:#fff; border-radius:12px; padding:12px 16px; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="background:rgba(167,202,221,.3)">
+                      <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F; letter-spacing:-.2px; text-wrap:pretty;">{{ a.q }}</div>
+                      <p style="margin:6px 0 0; font-size:15px; line-height:20px; color:#5F7683; text-wrap:pretty;">{{ a.short }}</p>
+                      <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                        <div style="height:24px; padding:0 10px 0 7px; border-radius:12px; background:rgba(47,125,87,.14); display:flex; align-items:center; gap:5px;">
+                          <svg width="11" height="9" viewBox="0 0 17 13" fill="none" aria-hidden="true"><path d="M1.5 6.6 6 11.4 15.5 1.5" stroke="#2F7D57" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                          <span style="font-size:13px; line-height:18px; font-weight:600; color:#2F7D57;">{{ a.agree }}</span>
+                        </div>
+                        <span style="font-size:13px; line-height:18px; color:#8196A1;">{{ a.when }}</span>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="padding:20px 16px 0;">
+                  <div onClick="{{ pushAsk }}" role="button" style="height:50px; border-radius:12px; background:#2A7BA4; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#1F6C94">
+                    <span style="font-size:17px; font-weight:600; color:#fff;">Nothing fits? Ask the travellers</span>
+                  </div>
+                  <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">You're anonymous here by default. No name, no photo, no history — just the question and roughly where you are.</p>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isGuidesTab }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:20px 16px 0;">
+                <div style="background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <sc-for list="{{ guides }}" as="g" hint-placeholder-count="4">
+                    <div>
+                      <div style="height:0.5px; background:{{ g.sep }}; margin-left:16px;"></div>
+                      <div onClick="{{ g.onTap }}" role="button" style="min-height:44px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;" style-active="background:rgba(167,202,221,.3)">
+                        <div style="width:32px; height:32px; border-radius:8px; background:{{ g.tile }}; display:flex; align-items:center; justify-content:center; flex:none;">
+                          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="{{ g.icon }}" stroke="{{ g.ink }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <div style="flex:1; min-width:0;">
+                          <div style="font-size:17px; line-height:22px; color:#16323F;">{{ g.title }}</div>
+                          <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px;">{{ g.sub }}</div>
+                        </div>
+                        <svg width="8" height="13" viewBox="0 0 8 13" fill="none" style="flex:none;" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5l-5 5" stroke="rgba(22,50,63,.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">All four are saved on your phone, so they still open with no signal.</p>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isSafety }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:10; background:#FDFAEA;">
+          <div style="position:absolute; top:0; left:0; right:0; height:103px; z-index:20; background:rgba(253,250,234,.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:0.5px solid rgba(22,50,63,.18); display:flex; align-items:flex-end; justify-content:center; padding-bottom:11px; opacity:{{ navOp }}; transition:opacity .2s ease; pointer-events:none;">
+            <span style="font-size:17px; font-weight:600; color:#16323F;">Support</span>
+          </div>
+          <div onScroll="{{ onPlanScroll }}" style="position:absolute; inset:0; overflow-y:auto; padding-bottom:99px;">
+            <div style="padding:66px 16px 0;">
+              <h1 style="font-family:Poppins,sans-serif; font-size:34px; line-height:41px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0;">Support</h1>
+              <p style="font-size:15px; line-height:20px; color:#5F7683; margin:4px 0 0; text-wrap:pretty;">Nothing leaves this phone unless you send it.</p>
+            </div>
+
+            <div style="padding:24px 16px 0;">
+              <div style="background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                <div onClick="{{ pushContact }}" role="button" style="min-height:44px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;" style-active="background:rgba(167,202,221,.3)">
+                  <div style="width:32px; height:32px; border-radius:16px; background:#A7CADD; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600; color:#16323F; flex:none;">P</div>
+                  <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">Trusted contact</span>
+                  <span style="font-size:17px; color:#8196A1;">Priya</span>
+                  <svg width="8" height="13" viewBox="0 0 8 13" fill="none" style="flex:none;" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5l-5 5" stroke="rgba(22,50,63,.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div style="height:0.5px; background:rgba(22,50,63,.18); margin-left:60px;"></div>
+                <div onClick="{{ pushLocation }}" role="button" style="min-height:44px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;" style-active="background:rgba(167,202,221,.3)">
+                  <div style="width:32px; height:32px; border-radius:8px; background:{{ shareTile }}; display:flex; align-items:center; justify-content:center; flex:none;">
+                    <svg width="15" height="18" viewBox="0 0 15 18" fill="none" aria-hidden="true"><path d="M7.5 1C4.5 1 2 3.4 2 6.4 2 10.5 7.5 17 7.5 17S13 10.5 13 6.4C13 3.4 10.5 1 7.5 1Z" stroke="{{ shareInk }}" stroke-width="1.6" stroke-linejoin="round"></path><circle cx="7.5" cy="6.3" r="1.9" fill="{{ shareInk }}"></circle></svg>
+                  </div>
+                  <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">Location sharing</span>
+                  <span style="font-size:17px; font-weight:600; color:{{ shareInk }};">{{ shareValue }}</span>
+                  <svg width="8" height="13" viewBox="0 0 8 13" fill="none" style="flex:none;" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5l-5 5" stroke="rgba(22,50,63,.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div style="height:0.5px; background:rgba(22,50,63,.18); margin-left:60px;"></div>
+                <div onClick="{{ pushData }}" role="button" style="min-height:44px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;" style-active="background:rgba(167,202,221,.3)">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(42,123,164,.14); display:flex; align-items:center; justify-content:center; flex:none;">
+                    <svg width="16" height="18" viewBox="0 0 16 18" fill="none" aria-hidden="true"><path d="M8 1 14.5 3.6v5.2c0 4-2.8 7-6.5 8.2C4.3 15.8 1.5 12.8 1.5 8.8V3.6L8 1Z" stroke="#2A7BA4" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">What Warbler knows</span>
+                  <svg width="8" height="13" viewBox="0 0 8 13" fill="none" style="flex:none;" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5l-5 5" stroke="rgba(22,50,63,.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:24px 16px 0;">
+              <div onClick="{{ tellPriya }}" role="button" style="height:50px; border-radius:12px; background:#2A7BA4; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;" style-active="background:#1F6C94">
+                <svg width="18" height="16" viewBox="0 0 20 18" fill="none" aria-hidden="true"><path d="M2 4.2A2.2 2.2 0 0 1 4.2 2h11.6A2.2 2.2 0 0 1 18 4.2v7.6a2.2 2.2 0 0 1-2.2 2.2H7l-4 3.2v-3.2H4.2A2.2 2.2 0 0 1 2 11.8V4.2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"></path></svg>
+                <span style="font-size:17px; font-weight:600; color:#fff;">Tell Priya I'm okay</span>
+              </div>
+              <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">Sends one short message. No location, no trip details.</p>
+            </div>
+
+            <div style="padding:24px 16px 0;">
+              <div onClick="{{ pushTriage }}" role="button" style="background:#fff; border-radius:12px; padding:12px 16px; display:flex; align-items:flex-start; gap:12px; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="background:rgba(217,43,31,.06)">
+                <div style="width:32px; height:32px; border-radius:8px; background:rgba(217,43,31,.12); display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px;">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2.8 18.2 17H1.8L10 2.8ZM10 8v3.4M10 14.2h.01" stroke="#D92B1F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:17px; line-height:22px; font-weight:600; color:#D92B1F;">I need help now</div>
+                  <div style="font-size:15px; line-height:20px; color:#5F7683; margin-top:2px; text-wrap:pretty;">Local emergency numbers, your insurance details and Priya — one screen, works offline.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:24px 16px 0;">
+              <p style="font-size:13px; line-height:18px; color:#8196A1; margin:0 4px; text-wrap:pretty;">Warbler is a lightweight safety net, not a guarantee. It helps you feel prepared and supported when something unexpected happens — it can't prevent it.</p>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; left:0; right:0; bottom:0; z-index:40; background:rgba(253,250,234,.86); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); border-top:0.5px solid rgba(22,50,63,.16);">
+          <div style="display:flex; align-items:stretch;">
+            <div onClick="{{ goNow }}" role="tab" aria-label="Now" style="flex:1; min-height:49px; padding-top:7px; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; color:{{ cNow }};" style-active="opacity:.5">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5c0 4.1-3.6 7.4-8 7.4-.9 0-1.8-.1-2.6-.4L5 20l1.2-3.2A7 7 0 0 1 4 11.5C4 7.4 7.6 4.1 12 4.1s8 3.3 8 7.4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              <span style="font-size:10px; line-height:12px; font-weight:500;">Now</span>
+            </div>
+            <div onClick="{{ goPlan }}" role="tab" aria-label="Plan" style="flex:1; min-height:49px; padding-top:7px; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; color:{{ cPlan }};" style-active="opacity:.5">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="3" stroke="currentColor" stroke-width="1.8"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+              <span style="font-size:10px; line-height:12px; font-weight:500;">Plan</span>
+            </div>
+            <div onClick="{{ goNearby }}" role="tab" aria-label="Nearby" style="flex:1; min-height:49px; padding-top:7px; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; color:{{ cNearby }};" style-active="opacity:.5">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="1.8"></circle><path d="M15.2 8.8 13.6 13.6 8.8 15.2l1.6-4.8 4.8-1.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+              <span style="font-size:10px; line-height:12px; font-weight:500;">Nearby</span>
+            </div>
+            <div onClick="{{ goMoney }}" role="tab" aria-label="Money" style="flex:1; min-height:49px; padding-top:7px; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; color:{{ cMoney }};" style-active="opacity:.5">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"></circle><path d="M12 7.5v9M14.4 9.8c-.5-.8-1.4-1.2-2.4-1.2-1.3 0-2.3.7-2.3 1.8 0 2.5 4.8 1.3 4.8 3.8 0 1.1-1 1.9-2.4 1.9-1.1 0-2-.5-2.5-1.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+              <span style="font-size:10px; line-height:12px; font-weight:500;">Money</span>
+            </div>
+            <div onClick="{{ goSafety }}" role="tab" aria-label="Support" style="flex:1; min-height:49px; padding-top:7px; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; color:{{ cSafety }};" style-active="opacity:.5">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 19 6.3v5.6c0 4.3-3 7.6-7 8.9-4-1.3-7-4.6-7-8.9V6.3L12 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              <span style="font-size:10px; line-height:12px; font-weight:500;">Support</span>
+            </div>
+          </div>
+          <div style="height:34px; display:flex; align-items:center; justify-content:center;">
+            <div style="width:140px; height:5px; border-radius:3px; background:#16323F; opacity:.85;"></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pushed }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:50; background:#FDFAEA; animation:wbPush .34s cubic-bezier(.2,.85,.25,1) both; box-shadow:-10px 0 30px -10px rgba(14,28,36,.22);">
+          <div style="position:absolute; top:0; left:0; right:0; height:103px; z-index:10; background:rgba(253,250,234,.86); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:0.5px solid rgba(22,50,63,.18); display:flex; align-items:flex-end; padding:0 8px 4px;">
+            <div onClick="{{ popStack }}" role="button" aria-label="Back" style="min-width:44px; height:44px; padding:0 8px; display:flex; align-items:center; gap:5px; cursor:pointer;" style-active="opacity:.4">
+              <svg width="12" height="20" viewBox="0 0 12 20" fill="none" aria-hidden="true"><path d="M10 2 2 10l8 8" stroke="#2A7BA4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span style="font-size:17px; color:#2A7BA4;">{{ backLabel }}</span>
+            </div>
+            <div style="flex:1; height:44px; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; color:#16323F; margin-left:-88px; pointer-events:none;">{{ pushTitle }}</div>
+          </div>
+          <div style="position:absolute; top:0; left:0; right:0; bottom:{{ pushBottom }}; overflow-y:auto; padding:127px 16px 40px;">
+
+            <sc-if value="{{ isLocationScreen }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:0 0 8px; text-wrap:pretty;">When should Warbler know where you are?</div>
+                <div style="background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <sc-for list="{{ shareOptions }}" as="s" hint-placeholder-count="4">
+                    <div>
+                      <div style="height:0.5px; background:{{ s.sep }}; margin-left:16px;"></div>
+                      <div onClick="{{ s.onTap }}" role="radio" style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;" style-active="background:rgba(167,202,221,.3)">
+                        <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">{{ s.label }}</span>
+                        <div style="width:22px; height:22px; flex:none; display:flex; align-items:center; justify-content:center; opacity:{{ s.on }};">
+                          <svg width="17" height="13" viewBox="0 0 17 13" fill="none" aria-hidden="true"><path d="M1.5 6.6 6 11.4 15.5 1.5" stroke="#2A7BA4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">{{ shareNote }}</p>
+                <div style="margin-top:24px; background:rgba(167,202,221,.35); border-radius:12px; padding:16px; display:flex; gap:12px;">
+                  <img src="assets/woby-love.png" alt="" style="width:44px; flex:none; align-self:flex-start;">
+                  <p style="margin:0; font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">Whatever you pick, sharing ends on its own. I'll never start it for you, and you can stop it at any time.</p>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isContactScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="background:#fff; border-radius:12px; padding:16px; display:flex; align-items:center; gap:12px; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <div style="width:52px; height:52px; border-radius:26px; background:#A7CADD; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:600; color:#16323F; flex:none;">P</div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F;">Priya Raman</div>
+                    <div style="font-size:15px; line-height:20px; color:#5F7683;">Sister · last told 2 days ago</div>
+                  </div>
+                </div>
+                <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:24px 0 8px;">What she can see</div>
+                <div style="background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                    <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">Messages you send</span>
+                    <span style="font-size:17px; color:#8196A1;">Always</span>
+                  </div>
+                  <div style="height:0.5px; background:rgba(22,50,63,.18); margin-left:16px;"></div>
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                    <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">Your location</span>
+                    <span style="font-size:17px; color:#8196A1;">{{ shareValue }}</span>
+                  </div>
+                  <div style="height:0.5px; background:rgba(22,50,63,.18); margin-left:16px;"></div>
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                    <span style="flex:1; font-size:17px; line-height:22px; color:#16323F;">Your plan and spending</span>
+                    <span style="font-size:17px; color:#8196A1;">Never</span>
+                  </div>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">Priya has no app and no account. She just receives the messages you choose to send.</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isDataScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <p style="font-size:15px; line-height:20px; color:#5F7683; margin:0 4px 16px; text-wrap:pretty;">Everything below is stored on this phone. Turn off anything you'd rather I didn't use.</p>
+                <div style="background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <sc-for list="{{ dataSources }}" as="d" hint-placeholder-count="4">
+                    <div>
+                      <div style="height:0.5px; background:{{ d.sep }}; margin-left:16px;"></div>
+                      <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                        <div style="flex:1; min-width:0;">
+                          <div style="font-size:17px; line-height:22px; color:#16323F;">{{ d.label }}</div>
+                          <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px; text-wrap:pretty;">{{ d.detail }}</div>
+                        </div>
+                        <div onClick="{{ d.onTap }}" role="switch" style="width:51px; height:31px; border-radius:16px; background:{{ d.track }}; position:relative; cursor:pointer; transition:background .25s ease; flex:none;">
+                          <div style="position:absolute; top:2px; left:{{ d.knob }}; width:27px; height:27px; border-radius:14px; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.18); transition:left .25s cubic-bezier(.2,.8,.2,1);"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div onClick="{{ confirmWipe }}" role="button" style="margin-top:24px; min-height:50px; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="background:rgba(217,43,31,.06)">
+                  <span style="font-size:17px; font-weight:600; color:#D92B1F;">Delete everything Warbler knows</span>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isPrepScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="background:rgba(167,202,221,.35); border-radius:12px; padding:16px; display:flex; gap:12px;">
+                  <img src="assets/woby-happy.png" alt="" style="width:44px; flex:none; align-self:flex-start;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F;">{{ prepCount }}</div>
+                    <p style="margin:2px 0 0; font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">{{ prepEncouragement }}</p>
+                    <div style="height:6px; border-radius:3px; background:rgba(255,255,255,.7); margin-top:12px; overflow:hidden;">
+                      <div style="height:100%; width:{{ prepPct }}; border-radius:3px; background:#2A7BA4; transition:width .4s cubic-bezier(.2,.8,.2,1);"></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top:20px; height:32px; border-radius:9px; background:rgba(22,50,63,.07); padding:2px; display:flex; gap:2px;">
+                  <div onClick="{{ prepPacking }}" role="button" style="flex:1; border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:{{ packBg }}; box-shadow:{{ packShadow }}; transition:background .2s ease;">
+                    <span style="font-size:13px; font-weight:600; color:#16323F;">Packing</span>
+                  </div>
+                  <div onClick="{{ prepBefore }}" role="button" style="flex:1; border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:{{ beforeBg }}; box-shadow:{{ beforeShadow }}; transition:background .2s ease;">
+                    <span style="font-size:13px; font-weight:600; color:#16323F;">Before you go</span>
+                  </div>
+                </div>
+                <div style="margin-top:16px; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <sc-for list="{{ checklist }}" as="c" hint-placeholder-count="6">
+                    <div>
+                      <div style="height:0.5px; background:{{ c.sep }}; margin-left:52px;"></div>
+                      <div onClick="{{ c.onTap }}" role="checkbox" style="min-height:44px; padding:11px 16px; display:flex; align-items:flex-start; gap:12px; cursor:pointer;" style-active="background:rgba(167,202,221,.3)">
+                        <div style="width:24px; height:24px; border-radius:12px; border:1.8px solid {{ c.ring }}; background:{{ c.fill }}; display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px; transition:background .18s ease, border-color .18s ease;">
+                          <svg width="13" height="10" viewBox="0 0 17 13" fill="none" style="opacity:{{ c.tick }};" aria-hidden="true"><path d="M1.5 6.6 6 11.4 15.5 1.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <div style="flex:1; min-width:0;">
+                          <div style="font-size:17px; line-height:22px; color:{{ c.labelColor }}; text-decoration:{{ c.strike }}; text-decoration-color:rgba(95,118,131,.5); text-wrap:pretty; transition:color .18s ease;">{{ c.label }}</div>
+                          <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px; text-wrap:pretty;">{{ c.note }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">No streaks, no nagging. This is just a list you can put down.</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isReflectScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <sc-if value="{{ reflectDone }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+                    <img src="assets/woby-love.png" alt="" style="width:120px;">
+                    <h2 style="font-family:Poppins,sans-serif; font-size:28px; line-height:34px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:16px 0 0;">You did it.</h2>
+                    <p style="font-size:15px; line-height:20px; color:#5F7683; margin:8px 0 0; max-width:280px; text-wrap:pretty;">Nine days, one missed train, and you got yourself home every time.</p>
+                    <div style="width:100%; margin-top:24px; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07); text-align:left;">
+                      <sc-for list="{{ reflectTakeaways }}" as="t" hint-placeholder-count="3">
+                        <div>
+                          <div style="height:0.5px; background:{{ t.sep }}; margin-left:16px;"></div>
+                          <div style="min-height:44px; padding:12px 16px;">
+                            <div style="font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">{{ t.text }}</div>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">Your answers stay on this phone. Nothing is published anywhere.</p>
+                    <div onClick="{{ reflectRestart }}" role="button" style="width:100%; margin-top:24px; height:50px; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="opacity:.6">
+                      <span style="font-size:17px; color:#2A7BA4;">Start again</span>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ reflectAsking }}" hint-placeholder-val="{{ true }}">
+                  <div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                      <span style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683;">{{ reflectProgress }}</span>
+                      <div onClick="{{ reflectSkip }}" role="button" style="min-height:44px; display:flex; align-items:center; cursor:pointer; padding:0 4px;" style-active="opacity:.5">
+                        <span style="font-size:15px; color:#2A7BA4;">Skip</span>
+                      </div>
+                    </div>
+                    <h2 style="font-family:Poppins,sans-serif; font-size:28px; line-height:34px; font-weight:600; letter-spacing:-.4px; color:#16323F; margin:0 0 20px; text-wrap:pretty;">{{ reflectQuestion }}</h2>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                      <sc-for list="{{ reflectOptions }}" as="o" hint-placeholder-count="5">
+                        <div onClick="{{ o.onTap }}" role="radio" style="background:#fff; border-radius:12px; min-height:50px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07); border:1.5px solid {{ o.border }};" style-active="background:rgba(167,202,221,.3)">
+                          <div style="width:26px; height:26px; border-radius:13px; background:rgba(167,202,221,.45); display:flex; align-items:center; justify-content:center; flex:none; font-size:13px; font-weight:600; color:#16323F;">{{ o.letter }}</div>
+                          <span style="flex:1; font-size:17px; line-height:22px; color:#16323F; text-wrap:pretty;">{{ o.label }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isAskScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:16px;">
+                  <img src="assets/woby-fly.png" alt="" style="width:44px; flex:none;">
+                  <p style="margin:0; flex:1; min-width:0; font-size:15px; line-height:20px; color:#5F7683; text-wrap:pretty;">I'll carry this to travellers who've been where you are. Nobody sees who's asking.</p>
+                </div>
+                <div onClick="{{ openAskKb }}" role="button" style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 1px 2px rgba(22,50,63,.07); border:1.5px solid {{ askFieldBorder }}; cursor:text; min-height:66px; box-sizing:border-box;" style-active="border-color:#71ABCB">
+                  <textarea value="{{ askDraft }}" rows="2" readonly aria-label="Your question" placeholder="What would you like to ask?" style="width:100%; border:0; outline:0; background:transparent; font-size:17px; line-height:22px; color:#16323F; resize:none; padding:0; margin:0; display:block; cursor:text;"></textarea>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+                  <sc-for list="{{ askSuggestions }}" as="s" hint-placeholder-count="3">
+                    <div onClick="{{ s.onTap }}" role="button" style="height:38px; padding:0 16px; border-radius:19px; background:#fff; border:1px solid rgba(113,171,203,.5); display:flex; align-items:center; cursor:pointer;" style-active="background:rgba(167,202,221,.45)">
+                      <span style="font-size:15px; font-weight:500; color:#2A7BA4; white-space:nowrap;">{{ s.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:24px; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                    <div style="flex:1; min-width:0;">
+                      <div style="font-size:17px; line-height:22px; color:#16323F;">Ask anonymously</div>
+                      <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px; text-wrap:pretty;">No name, no photo, no history attached.</div>
+                    </div>
+                    <div onClick="{{ toggleAnon }}" role="switch" style="width:51px; height:31px; border-radius:16px; background:{{ anonTrack }}; position:relative; cursor:pointer; transition:background .25s ease; flex:none;">
+                      <div style="position:absolute; top:2px; left:{{ anonKnob }}; width:27px; height:27px; border-radius:14px; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.18); transition:left .25s cubic-bezier(.2,.8,.2,1);"></div>
+                    </div>
+                  </div>
+                  <div style="height:0.5px; background:rgba(22,50,63,.18); margin-left:16px;"></div>
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+                    <div style="flex:1; min-width:0;">
+                      <div style="font-size:17px; line-height:22px; color:#16323F;">Include the area</div>
+                      <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px; text-wrap:pretty;">Namba, not your exact spot. Helps people answer usefully.</div>
+                    </div>
+                    <div onClick="{{ toggleArea }}" role="switch" style="width:51px; height:31px; border-radius:16px; background:{{ areaTrack }}; position:relative; cursor:pointer; transition:background .25s ease; flex:none;">
+                      <div style="position:absolute; top:2px; left:{{ areaKnob }}; width:27px; height:27px; border-radius:14px; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.18); transition:left .25s cubic-bezier(.2,.8,.2,1);"></div>
+                    </div>
+                  </div>
+                </div>
+                <div onClick="{{ sendAsk }}" role="button" style="margin-top:24px; height:50px; border-radius:12px; background:#2A7BA4; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#1F6C94">
+                  <span style="font-size:17px; font-weight:600; color:#fff;">Post the question</span>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">It goes out when you're back online. Answers come back here, not to your phone number.</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isAnswerScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <h2 style="font-family:Poppins,sans-serif; font-size:22px; line-height:28px; font-weight:600; letter-spacing:-.3px; color:#16323F; margin:0; text-wrap:pretty;">{{ answerQ }}</h2>
+                <div style="font-size:13px; line-height:18px; color:#8196A1; margin-top:6px;">{{ answerMeta }}</div>
+                <div style="margin-top:20px; display:flex; flex-direction:column; gap:8px;">
+                  <sc-for list="{{ answerReplies }}" as="r" hint-placeholder-count="3">
+                    <div style="background:#fff; border-radius:12px; padding:12px 16px; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:26px; height:26px; border-radius:13px; background:rgba(167,202,221,.5); flex:none;"></div>
+                        <span style="font-size:13px; line-height:18px; font-weight:600; color:#16323F;">{{ r.who }}</span>
+                        <span style="font-size:13px; line-height:18px; color:#8196A1;">{{ r.when }}</span>
+                      </div>
+                      <p style="margin:8px 0 0; font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">{{ r.text }}</p>
+                    </div>
+                  </sc-for>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:12px 4px 0; text-wrap:pretty;">Everyone here is anonymous. Treat it as one traveller's experience, not official advice.</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isGuideScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <h2 style="font-family:Poppins,sans-serif; font-size:22px; line-height:28px; font-weight:600; letter-spacing:-.3px; color:#16323F; margin:0;">{{ guideTitle }}</h2>
+                <p style="font-size:15px; line-height:20px; color:#5F7683; margin:6px 0 0; text-wrap:pretty;">{{ guideIntro }}</p>
+                <div style="margin-top:20px; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <sc-for list="{{ guidePoints }}" as="p" hint-placeholder-count="4">
+                    <div>
+                      <div style="height:0.5px; background:{{ p.sep }}; margin-left:16px;"></div>
+                      <div style="padding:12px 16px;">
+                        <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F;">{{ p.head }}</div>
+                        <p style="margin:2px 0 0; font-size:15px; line-height:20px; color:#5F7683; text-wrap:pretty;">{{ p.body }}</p>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:20px; background:rgba(167,202,221,.35); border-radius:12px; padding:16px; display:flex; gap:12px;">
+                  <img src="assets/woby-hero.png" alt="" style="width:44px; flex:none; align-self:flex-start;">
+                  <p style="margin:0; font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">Saved on your phone. If you'd rather just ask me, I'm one tab away.</p>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isTriageScreen }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="background:rgba(167,202,221,.35); border-radius:12px; padding:16px; display:flex; gap:12px;">
+                  <img src="assets/woby-hero.png" alt="" style="width:44px; flex:none; align-self:flex-start;">
+                  <p style="margin:0; font-size:15px; line-height:20px; color:#16323F; text-wrap:pretty;">From what you've told me tonight, this reads as something to sort soon rather than this second. You know better than me though — change it if I've got it wrong.</p>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:16px;">
+                  <div onClick="{{ call119 }}" role="button" style="flex:1; min-height:50px; border-radius:12px; background:#D92B1F; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#B02218">
+                    <span style="font-size:17px; font-weight:600; color:#fff;">Call 119</span>
+                  </div>
+                  <div onClick="{{ call110 }}" role="button" style="flex:1; min-height:50px; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07);" style-active="background:rgba(217,43,31,.06)">
+                    <span style="font-size:17px; font-weight:600; color:#D92B1F;">Call 110</span>
+                  </div>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0;">119 ambulance and fire · 110 police. Always here, whatever you pick below.</p>
+                <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:24px 0 8px;">How urgent is it?</div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <sc-for list="{{ triageLevels }}" as="t" hint-placeholder-count="3">
+                    <div onClick="{{ t.onTap }}" role="button" style="background:#fff; border-radius:12px; padding:12px 16px; cursor:pointer; box-shadow:0 1px 2px rgba(22,50,63,.07); border:1.5px solid {{ t.border }};" style-active="background:rgba(167,202,221,.3)">
+                      <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="width:10px; height:10px; border-radius:5px; background:{{ t.dot }}; flex:none;"></div>
+                        <span style="flex:1; font-size:17px; line-height:22px; font-weight:600; color:#16323F;">{{ t.label }}</span>
+                        <sc-if value="{{ t.suggested }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size:13px; line-height:18px; font-weight:600; color:#2A7BA4;">Woby's read</span>
+                        </sc-if>
+                      </div>
+                      <p style="margin:6px 0 0 20px; font-size:15px; line-height:20px; color:#5F7683; text-wrap:pretty;">{{ t.body }}</p>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="font-size:13px; line-height:18px; font-weight:600; color:#5F7683; margin:24px 0 8px;">{{ triageActionsTitle }}</div>
+                <div style="background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(22,50,63,.07);">
+                  <sc-for list="{{ triageActions }}" as="a" hint-placeholder-count="3">
+                    <div>
+                      <div style="height:0.5px; background:{{ a.sep }}; margin-left:16px;"></div>
+                      <div onClick="{{ a.onTap }}" role="button" style="min-height:44px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;" style-active="background:rgba(167,202,221,.3)">
+                        <div style="flex:1; min-width:0;">
+                          <div style="font-size:17px; line-height:22px; font-weight:600; color:{{ a.color }};">{{ a.label }}</div>
+                          <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px; text-wrap:pretty;">{{ a.note }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <p style="font-size:13px; line-height:18px; color:#8196A1; margin:8px 4px 0; text-wrap:pretty;">Warbler can't reach anyone for you. These put the right number and the right words in front of you — you make the call.</p>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ sheet }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:70;">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; background:rgba(14,28,36,.4); animation:wbDim .28s ease both;"></div>
+          <div onPointerDown="{{ sheetDown }}" onPointerMove="{{ sheetMove }}" onPointerUp="{{ sheetUp }}" onPointerCancel="{{ sheetUp }}" style="position:absolute; left:0; right:0; bottom:0; background:#FDFAEA; border-radius:13px 13px 0 0; padding:8px 16px 34px; animation:wbSheet .34s cubic-bezier(.2,.85,.25,1) both; transform:translateY({{ sheetY }}); touch-action:none;">
+            <div style="width:36px; height:5px; border-radius:3px; background:rgba(22,50,63,.22); margin:0 auto 16px; cursor:grab;"></div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <img src="assets/woby-hero.png" alt="" style="width:56px; flex:none;">
+              <div style="flex:1; min-width:0;">
+                <h2 style="font-family:Poppins,sans-serif; font-size:20px; line-height:25px; font-weight:600; color:#16323F; margin:0; letter-spacing:-.3px;">{{ sheetTitle }}</h2>
+                <p style="margin:4px 0 0; font-size:15px; line-height:20px; color:#5F7683; text-wrap:pretty;">{{ sheetBody }}</p>
+              </div>
+            </div>
+            <div style="margin-top:16px; background:#fff; border-radius:10px; overflow:hidden;">
+              <sc-for list="{{ sheetRows }}" as="r" hint-placeholder-count="2">
+                <div>
+                  <div style="height:0.5px; background:{{ r.sep }}; margin-left:16px;"></div>
+                  <div style="min-height:44px; padding:11px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <span style="font-size:17px; color:#5F7683;">{{ r.k }}</span>
+                    <span style="font-size:17px; font-weight:600; color:#16323F; text-align:right;">{{ r.v }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:8px; background:#fff; border-radius:10px; min-height:44px; padding:11px 16px; display:flex; align-items:center; gap:12px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:17px; line-height:22px; color:#16323F;">Let Priya know when I'm back</div>
+                <div style="font-size:13px; line-height:18px; color:#5F7683; margin-top:2px;">One message. Nothing else is shared.</div>
+              </div>
+              <div onClick="{{ toggleTell }}" role="switch" style="width:51px; height:31px; border-radius:16px; background:{{ tellTrackBg }}; position:relative; cursor:pointer; transition:background .25s ease; flex:none;">
+                <div style="position:absolute; top:2px; left:{{ tellKnobLeft }}; width:27px; height:27px; border-radius:14px; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.18); transition:left .25s cubic-bezier(.2,.8,.2,1);"></div>
+              </div>
+            </div>
+            <div onClick="{{ confirmSheet }}" role="button" style="margin-top:16px; height:50px; border-radius:12px; background:#2A7BA4; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#1F6C94">
+              <span style="font-size:17px; font-weight:600; color:#fff;">{{ sheetCta }}</span>
+            </div>
+            <div onClick="{{ closeSheet }}" role="button" style="margin-top:4px; height:50px; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="opacity:.5">
+              <span style="font-size:17px; color:#2A7BA4;">Not this one</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:75;">
+          <div onClick="{{ closeMenu }}" style="position:absolute; inset:0; background:rgba(14,28,36,.22); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:wbDim .2s ease both;"></div>
+          <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:250px; border-radius:14px; overflow:hidden; background:rgba(255,255,255,.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:0 20px 50px -12px rgba(14,28,36,.4); animation:wbAlert .22s cubic-bezier(.2,.9,.3,1) both;">
+            <sc-for list="{{ menuItems }}" as="i" hint-placeholder-count="3">
+              <div>
+                <div style="height:0.5px; background:{{ i.sep }};"></div>
+                <div onClick="{{ i.onTap }}" role="menuitem" style="min-height:44px; padding:11px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer;" style-active="background:rgba(22,50,63,.06)">
+                  <span style="font-size:17px; color:{{ i.color }};">{{ i.label }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ alert }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; inset:0; z-index:80; display:flex; align-items:center; justify-content:center; padding:0 40px;">
+          <div style="position:absolute; inset:0; background:rgba(14,28,36,.3); animation:wbDim .2s ease both;"></div>
+          <div style="position:relative; width:270px; border-radius:14px; overflow:hidden; background:rgba(253,250,234,.96); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); animation:wbAlert .2s cubic-bezier(.2,.9,.3,1) both;">
+            <div style="padding:19px 16px 16px; text-align:center;">
+              <div style="font-size:17px; line-height:22px; font-weight:600; color:#16323F;">{{ alertTitle }}</div>
+              <p style="margin:4px 0 0; font-size:13px; line-height:18px; color:#16323F; text-wrap:pretty;">{{ alertBody }}</p>
+            </div>
+            <div style="height:0.5px; background:rgba(22,50,63,.2);"></div>
+            <div style="display:flex;">
+              <div onClick="{{ alertCancel }}" role="button" style="flex:1; min-height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:rgba(22,50,63,.06)">
+                <span style="font-size:17px; color:#2A7BA4;">Cancel</span>
+              </div>
+              <div style="width:0.5px; background:rgba(22,50,63,.2);"></div>
+              <div onClick="{{ alertConfirm }}" role="button" style="flex:1; min-height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:rgba(217,43,31,.08)">
+                <span style="font-size:17px; font-weight:600; color:{{ alertColor }};">{{ alertCta }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ kb }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; left:0; right:0; bottom:0; height:291px; z-index:55; background:#D3D5DA; animation:wbKb .26s cubic-bezier(.2,.85,.25,1) both; padding:8px 3px 0; box-sizing:border-box; user-select:none;">
+          <div style="display:flex; gap:6px; padding:0 3px;">
+            <sc-for list="{{ kbRow1 }}" as="k" hint-placeholder-count="10">
+              <div onClick="{{ k.onTap }}" style="flex:1; height:42px; border-radius:5px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#BFC3C9">
+                <span style="font-size:22px; color:#000;">{{ k.c }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex; gap:6px; padding:11px 19px 0;">
+            <sc-for list="{{ kbRow2 }}" as="k" hint-placeholder-count="9">
+              <div onClick="{{ k.onTap }}" style="flex:1; height:42px; border-radius:5px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#BFC3C9">
+                <span style="font-size:22px; color:#000;">{{ k.c }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex; gap:6px; padding:11px 3px 0; align-items:stretch;">
+            <div style="width:42px; height:42px; border-radius:5px; background:#ADB3BD; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="#000" aria-hidden="true"><path d="M10 2.5 18 11h-4.5v5.5h-7V11H2L10 2.5Z"></path></svg>
+            </div>
+            <div style="flex:1; display:flex; gap:6px;">
+              <sc-for list="{{ kbRow3 }}" as="k" hint-placeholder-count="7">
+                <div onClick="{{ k.onTap }}" style="flex:1; height:42px; border-radius:5px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#BFC3C9">
+                  <span style="font-size:22px; color:#000;">{{ k.c }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div onClick="{{ kbBack }}" role="button" aria-label="Delete" style="width:42px; height:42px; border-radius:5px; background:#ADB3BD; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-active="background:#93989F">
+              <svg width="22" height="17" viewBox="0 0 24 18" fill="none" aria-hidden="true"><path d="M8 1h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8L1 9l7-8Z" stroke="#000" stroke-width="1.6" stroke-linejoin="round"></path><path d="M12 6.5 18 12M18 6.5 12 12" stroke="#000" stroke-width="1.6" stroke-linecap="round"></path></svg>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; padding:11px 3px 0;">
+            <div style="width:42px; height:42px; border-radius:5px; background:#ADB3BD; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; font-size:15px; color:#000;">123</div>
+            <div onClick="{{ kbSpace }}" role="button" aria-label="Space" style="flex:1; height:42px; border-radius:5px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; color:#000;" style-active="background:#BFC3C9">space</div>
+            <div onClick="{{ kbReturn }}" role="button" aria-label="Send" style="width:88px; height:42px; border-radius:5px; background:#2A7BA4; box-shadow:0 1px 0 rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; font-weight:600; color:#fff;" style-active="background:#1F6C94">{{ kbReturnLabel }}</div>
+          </div>
+          <div style="height:34px; display:flex; align-items:center; justify-content:center; margin-top:6px;">
+            <div onClick="{{ closeKb }}" style="width:140px; height:5px; border-radius:3px; background:#16323F; opacity:.5; cursor:pointer;"></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute; top:67px; left:16px; right:16px; z-index:95; display:flex; justify-content:center; pointer-events:none;">
+          <div style="max-width:100%; background:#16323F; border-radius:20px; padding:11px 16px; display:flex; align-items:center; gap:10px; box-shadow:0 12px 28px -10px rgba(14,28,36,.6); animation:wbToast 3.4s ease both;">
+            <img src="assets/woby-happy.png" alt="" style="width:26px; flex:none;">
+            <span style="font-size:15px; line-height:20px; font-weight:500; color:#fff; text-wrap:pretty;">{{ toast }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:520,&quot;height&quot;:940},&quot;liveAI&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;ambientNudge&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Onboarding&quot;,&quot;options&quot;:[&quot;Onboarding&quot;,&quot;Right now&quot;,&quot;Plan&quot;,&quot;Nearby&quot;,&quot;Money&quot;,&quot;Support&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+const FACE = {
+  calm: 'assets/woby-hero.png',
+  happy: 'assets/woby-happy.png',
+  love: 'assets/woby-love.png',
+  sing: 'assets/woby-sing.png'
+};
+
+const SCRIPTS = [
+  {
+    match: /train|metro|subway|missed|stranded|stuck|last one|home/i,
+    face: 'calm',
+    text: "You've got options — here are three good ways back tonight.",
+    options: [
+      { title: 'Night bus 106', price: '€3', meta: '52 min · leaves 11:58', why: "The stop is 200 m behind you at Exit 4, and you'd be in by 12:50.", primary: false },
+      { title: 'Split a taxi', price: '€14', meta: '22 min · rank is 2 min away', why: 'A couple of people from your hostel are in that queue now, if you fancy the company.', primary: true },
+      { title: 'Capsule by the station', price: '€28', meta: '4 min walk · charger at the desk', why: "A proper bed and a full battery by morning, if you'd rather not wait around.", primary: false }
+    ],
+    follow: { face: 'calm', text: 'Either way, the konbini on this corner has a charger — worth a top-up while you decide.' }
+  },
+  {
+    match: /budget|money|broke|overspen|expensive|spent|cash/i,
+    face: 'calm',
+    text: "You're €340 ahead of plan with six days to go. Here are a few easy ways to even it out.",
+    options: [
+      { title: 'Two konbini nights', price: 'saves €48', meta: 'Thursday and Saturday', why: "You've enjoyed these before, and they free up room for the rest of the week.", primary: true },
+      { title: 'Kyoto as a day trip', price: 'saves €90', meta: '28 min on the rapid', why: 'You keep the temples and skip one night of accommodation.', primary: false },
+      { title: 'Keep the kaiseki booking', price: '€110', meta: 'the 21st, 7pm', why: "You've been looking forward to this one — happy to protect it.", primary: false }
+    ],
+    follow: null
+  },
+  {
+    match: /tired|exhaust|sleep|drained|overwhelm|too much|burn|energy/i,
+    face: 'love',
+    text: "Tomorrow's looking full. Here are some ways to make it feel lighter.",
+    options: [
+      { title: 'Move Fushimi Inari to Sunday', price: 'free', meta: 'same early light', why: 'Sunday mornings are quieter there, and tonight you get a proper sleep.', primary: true },
+      { title: 'Keep it all, start at 10', price: 'free', meta: 'breakfast pushed back', why: 'Still very doable — just a gentler start to the morning.', primary: false },
+      { title: 'Leave tomorrow open', price: 'free', meta: 'nothing booked', why: 'Rest days often turn out to be the ones people remember most.', primary: false }
+    ],
+    follow: null
+  },
+  {
+    match: /sick|ill|hurt|pain|fever|pharmac|hospital|doctor|not feeling/i,
+    face: 'love',
+    text: "Let's get you sorted. There's a 24-hour pharmacy close by, and I've written out what to ask for.",
+    options: [
+      { title: 'Kusuri no Aoki', price: '—', meta: '600 m · open till 6am', why: 'Show them this: 熱があります、市販の解熱剤をください。', primary: true },
+      { title: 'English-speaking clinic', price: '¥8,000', meta: 'opens 9am · 2 stops', why: "Covered by your insurance — I've got the policy number ready.", primary: false },
+      { title: 'Send Priya a quick note', price: '—', meta: 'one message, no fuss', why: '"Bit under the weather, resting up, will message tomorrow."', primary: false }
+    ],
+    follow: null
+  }
+];
+
+const FALLBACK = {
+  face: 'calm',
+  text: "Happy to help with this. Here's where I'd start.",
+  options: [
+    { title: 'Sort it now', price: '—', meta: 'about 10 min', why: "A small first step tonight, so it's off your mind.", primary: true },
+    { title: 'Come back to it in the morning', price: '—', meta: "I'll remind you at 9", why: 'Nothing here changes overnight, and a fresh start often helps.', primary: false },
+    { title: 'Tell me a bit more', price: '—', meta: 'two quick questions', why: 'Happy to ask rather than guess — this one sounds like it matters to you.', primary: false }
+  ]
+};
+
+const SYSTEM = [
+  'You are Woby, a small blue bird who travels with one solo traveller and keeps them steady.',
+  'Context: Osaka, Japan. 11:04pm, night 4 of 9. Phone at 18% battery. EUR 418 of a EUR 580 budget left, 5 days to go. Staying 2.4km away. Trusted contact: Priya, their sister, in London.',
+  'Voice: warm, calm, encouraging. Neutral and supportive — never judgemental, never pushy, never guilt-inducing. Do not tell the traveller how they feel or predict that they will regret something. Offer options, never verdicts. Short, plain sentences.',
+  'Never promise safety or guarantee an outcome. You help them feel prepared, not protected.',
+  'Always reply with ONLY a JSON object, no markdown fence:',
+  '{"text":"one or two supportive sentences, max 30 words","options":[{"title":"short action","price":"EUR amount or dash","meta":"time or distance detail","why":"one encouraging sentence explaining why this could work for them"}]}',
+  'Exactly 3 options. Order by what you would genuinely suggest first. One may be a do-nothing, rest, or tell-Priya option.'
+].join(' ');
+
+const SHARE = [
+  { key: 'journey', label: 'Only during this journey', short: 'This journey', note: "Sharing ends on its own when you're back at your stay." },
+  { key: 'arrive', label: 'Until I arrive', short: 'Until arrival', note: 'Sharing ends the moment you reach Hostel Sen.' },
+  { key: 'hours', label: 'For the next 2 hours', short: '2 hours', note: 'Sharing ends at 1:04am. You can stop it sooner at any time.' },
+  { key: 'none', label: 'Not right now', short: 'Off', note: 'Your location stays on this phone. Warbler never starts sharing on its own.' }
+];
+
+const PUSH_TITLES = {
+  contact: 'Trusted contact', location: 'Location sharing', data: 'What Warbler knows',
+  prep: 'Trip prep', reflect: 'Looking back', ask: 'Ask the travellers',
+  answer: 'Answers', guide: 'Guide', triage: 'Getting help'
+};
+
+const PACKING = [
+  { id: 'p1', label: 'Passport, plus a photo of it in your email', note: 'Takes thirty seconds and saves a very bad afternoon.' },
+  { id: 'p2', label: 'Insurance policy number', note: "Written down somewhere that isn't the app that has it." },
+  { id: 'p3', label: 'Plug adapter', note: 'Japan uses Type A. Your UK plugs will not fit.' },
+  { id: 'p4', label: 'Power bank', note: 'Tonight is exactly why.' },
+  { id: 'p5', label: 'Medication, in its box', note: 'Customs prefer the label to be on it.' },
+  { id: 'p6', label: 'A card that works abroad, and some cash', note: 'Plenty of small places here are still cash only.' }
+];
+
+const BEFORE = [
+  { id: 'b1', label: 'Tell Priya your dates', note: 'She only needs the outline, not the itinerary.' },
+  { id: 'b2', label: 'Check whether you need a visa', note: 'UK passport, under 90 days — you do not.' },
+  { id: 'b3', label: 'Download offline maps for Osaka', note: 'Saved. This is what got you home tonight.' },
+  { id: 'b4', label: 'Save the local emergency numbers', note: '119 for ambulance and fire, 110 for police.' },
+  { id: 'b5', label: 'Set the emergency contact on your phone', note: 'Separate from Warbler — it works from the lock screen.' }
+];
+
+const DONE_BY_DEFAULT = { p1: 1, p2: 1, p3: 1, p5: 1, p6: 1, b1: 1, b2: 1, b3: 1, b4: 1 };
+
+const ANSWERS = [
+  {
+    id: 'a1', q: 'Is Namba station okay to walk through around midnight?',
+    short: 'Busy until the last train and staffed after. The quieter stretch is the canal path east.',
+    agree: '7 travellers', when: 'Updated 2 days ago',
+    replies: [
+      { who: 'Traveller in Osaka', when: '2 days ago', text: "Walked it at half twelve on a Tuesday. Still plenty of people, konbini open, staff on the gate. Felt completely normal." },
+      { who: 'Traveller in Osaka', when: '1 week ago', text: "Fine, but the canal path east is much quieter after midnight. I take the main road instead — it's two minutes longer and much busier." },
+      { who: 'Traveller in Kyoto', when: '3 weeks ago', text: 'Did this a lot on a solo trip in November. No issues. The staffed exits are 4 and 11 if you want to come out somewhere lit.' }
+    ]
+  },
+  {
+    id: 'a2', q: 'Do the night buses take IC cards?',
+    short: 'Bus 106 takes ICOCA and Suica. Drivers cannot change notes above ¥1,000.',
+    agree: '4 travellers', when: 'Updated 5 days ago',
+    replies: [
+      { who: 'Traveller in Osaka', when: '5 days ago', text: 'Tapped my Suica on the 106 last week, worked fine. Tap at the back door when you get on.' },
+      { who: 'Traveller in Osaka', when: '2 weeks ago', text: "Bring coins as a backup. I had a ¥5,000 note and the driver genuinely couldn't help." }
+    ]
+  },
+  {
+    id: 'a3', q: 'Capsule hotels near the station — book ahead or walk in?',
+    short: 'Walk-in after 11pm is usually cheaper than the app. Bring your passport.',
+    agree: '5 travellers', when: 'Updated 1 week ago',
+    replies: [
+      { who: 'Traveller in Osaka', when: '1 week ago', text: 'Walked in at midnight, paid about ¥600 less than the app was showing. They just need your passport.' },
+      { who: 'Traveller in Tokyo', when: '1 month ago', text: 'Worth checking the app first anyway on a Friday or Saturday — those do sell out.' }
+    ]
+  },
+  {
+    id: 'a4', q: 'Eating alone in the evening — is it odd here?',
+    short: 'Not at all. Counter seats are designed for it and nobody will look twice.',
+    agree: '12 travellers', when: 'Updated 3 days ago',
+    replies: [
+      { who: 'Traveller in Osaka', when: '3 days ago', text: 'Solo counter dining is completely normal. Some places have single booths so you never speak to anyone.' },
+      { who: 'Traveller in Osaka', when: '2 weeks ago', text: 'This was the thing I was most nervous about and it turned out to be the easiest part of the whole trip.' }
+    ]
+  }
+];
+
+const GUIDES = [
+  {
+    id: 'g1', title: 'Getting around', sub: 'IC cards, last trains, night buses',
+    intro: 'Almost everything here runs on a tap card, and almost everything stops just before midnight.',
+    points: [
+      { head: 'Get an ICOCA', body: 'Works on trains, subways, buses and most convenience stores. Top it up at any machine with cash.' },
+      { head: 'Last trains are early', body: 'Most lines finish between 11:30pm and 12:15am. The gates close sooner than you would expect.' },
+      { head: 'Night buses exist', body: 'Fewer routes, roughly hourly, and they take the same card. Usually the cheapest way home late.' },
+      { head: 'Taxis are fine but pricey', body: 'Doors open by themselves. Many drivers take cards, but carrying cash saves a conversation.' }
+    ]
+  },
+  {
+    id: 'g2', title: 'Paying for things', sub: 'Cash still wins in small places',
+    intro: 'Cards are widely accepted in cities, and completely useless in exactly the places you will want to eat.',
+    points: [
+      { head: 'Carry ¥10,000 in cash', body: 'Small restaurants, shrines, markets and some hostels are still cash only.' },
+      { head: 'Use convenience store ATMs', body: '7-Eleven and Japan Post reliably accept foreign cards. Bank ATMs often do not.' },
+      { head: 'Always pay in yen', body: 'If a card machine offers to charge you in pounds, decline. The exchange rate is worse.' }
+    ]
+  },
+  {
+    id: 'g3', title: 'Staying connected', sub: 'eSIM, pocket wifi, and offline',
+    intro: 'You want data for maps and translation. You want offline copies for the night the data runs out.',
+    points: [
+      { head: 'eSIM is the simplest', body: 'Install before you fly, switch on when you land. No shop visit, no deposit.' },
+      { head: 'Download maps offline', body: 'Do it on hotel wifi on day one. It is the single most useful thing on this list.' },
+      { head: 'Public wifi is patchy', body: 'Convenience stores and stations have it. Most of it wants an email address first.' }
+    ]
+  },
+  {
+    id: 'g4', title: 'If something goes wrong', sub: 'Numbers, phrases, embassies',
+    intro: 'Worth reading once now, while nothing is wrong, so you are not reading it for the first time later.',
+    points: [
+      { head: '119 and 110', body: '119 is ambulance and fire. 110 is police. Both have English support, though it can take a moment.' },
+      { head: 'Koban are everywhere', body: 'Small neighbourhood police boxes. Staffed, used to lost tourists, and genuinely helpful.' },
+      { head: 'Your embassy', body: 'British Embassy Tokyo handles lost passports. Osaka has a consular office for urgent cases.' },
+      { head: 'One phrase worth having', body: '助けてください — tasukete kudasai — please help me.' }
+    ]
+  }
+];
+
+const REFLECT = [
+  { q: 'What challenged you most on this trip?', a: ['Working out where to go and what to do', 'Feeling unsure on my own', 'Spending more than I planned', 'Getting overwhelmed or worn out', 'Moments where I felt unsafe'] },
+  { q: 'What went better than you expected?', a: ['Getting around', 'Talking to strangers', 'Eating alone', 'Keeping to a budget', 'Sleeping properly'] },
+  { q: 'When did you feel most like yourself?', a: ['Early mornings', 'With other travellers', 'Walking with no plan', 'Somewhere local, eating', 'Quiet evenings in'] },
+  { q: 'What would you do differently?', a: ['Book less', 'Book more', 'Spend more on comfort', 'Move between places slower', 'Tell people at home more often'] },
+  { q: 'Would you travel alone again?', a: ['Tomorrow', 'Yes, but differently', 'Yes, with someone next time', 'Not sure yet', 'Probably not'] }
+];
+
+const TRIAGE = {
+  now: {
+    label: 'Right now', dot: '#D92B1F', title: 'Straight away',
+    body: "Someone is hurt, or you feel in danger where you're standing.",
+    actions: [
+      { label: 'Call 119', note: 'Ambulance and fire. English support available.', color: '#D92B1F' },
+      { label: 'Call 110', note: 'Police. Use this if you feel threatened.', color: '#D92B1F' },
+      { label: 'Show my details on screen', note: 'Insurance number, blood type, Priya — readable by someone else.', color: '#16323F' }
+    ]
+  },
+  soon: {
+    label: 'Soon, but not this second', dot: '#C86A12', title: 'Worth sorting tonight',
+    body: 'Something has gone wrong and it needs dealing with, but you are safe where you are.',
+    actions: [
+      { label: 'Nearest 24-hour pharmacy', note: '600 m. I have written down what to ask for.', color: '#16323F' },
+      { label: 'Nearest koban', note: 'Neighbourhood police box, 300 m. Used to helping travellers.', color: '#16323F' },
+      { label: 'Call your insurance line', note: 'Open 24 hours. Policy number is saved on this phone.', color: '#16323F' }
+    ]
+  },
+  minute: {
+    label: 'I just need a minute', dot: '#2A7BA4', title: 'Somewhere to land',
+    body: 'Nothing is broken. It has just been a lot, and you would like it to stop for a moment.',
+    actions: [
+      { label: 'Somewhere warm and open', note: 'Konbini on this corner, open all night, nobody minds you sitting.', color: '#16323F' },
+      { label: 'Breathe with me for a minute', note: 'Four in, six out. I will count.', color: '#16323F' },
+      { label: 'Message Priya', note: "I've drafted something low-key. You send it or you don't.", color: '#16323F' }
+    ]
+  }
+};
+
+class Component extends DCLogic {
+  state = {
+    screen: 'onboard',
+    step: 0,
+    tab: 'now',
+    push: null,
+    offline: true,
+    share: 'none',
+    tellOnArrival: false,
+    city: 'Osaka, Japan',
+    draft: '',
+    thinking: false,
+    offlineNotice: false,
+    lastAsk: '',
+    sheet: null,
+    sheetY: 0,
+    alert: null,
+    menu: null,
+    toast: null,
+    kb: false,
+    kbTarget: 'now',
+    seg: 'trip',
+    nearSeg: 'answers',
+    prepSeg: 'packing',
+    checked: Object.assign({}, DONE_BY_DEFAULT),
+    activeAnswer: null,
+    activeGuide: null,
+    reflectStep: 0,
+    reflectPicks: {},
+    triage: 'soon',
+    anon: true,
+    withArea: true,
+    askDraft: 'Is the canal path east of Namba okay to walk at this hour?',
+    navSolid: false,
+    pull: 0,
+    refreshing: false,
+    swipeId: null,
+    swipeX: 0,
+    removed: {},
+    planExtra: null,
+    msgs: []
+  };
+
+  componentDidMount() {
+    const start = this.props.startScreen;
+    const map = { 'Right now': 'now', Plan: 'plan', Nearby: 'nearby', Money: 'money', Support: 'safety' };
+    if (start && start !== 'Onboarding') this.setState({ screen: 'app', tab: map[start] || 'now' });
+    if (this.props.ambientNudge !== false) {
+      this.setState({ msgs: [{ id: 1, from: 'woby', face: 'calm', text: "Heads up — the last train from Namba is at 11:41, and you're about fourteen minutes away on foot." }] });
+    }
+  }
+
+  componentDidUpdate(_, prev) {
+    if (prev.msgs !== this.state.msgs || prev.thinking !== this.state.thinking || prev.kb !== this.state.kb) {
+      const el = this.scrollEl;
+      if (el) requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
+    }
+  }
+
+  buzz(ms) { if (navigator.vibrate) { try { navigator.vibrate(ms || 8); } catch (e) {} } }
+  flash(text) { this.setState({ toast: text }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 3400); }
+  push(msg) { this.setState(s => ({ msgs: s.msgs.concat([Object.assign({ id: Date.now() + Math.random() }, msg)]) })); }
+
+  ask(text) {
+    const q = (text || '').trim();
+    if (!q) return;
+    this.buzz(8);
+    this.push({ from: 'me', text: q });
+    this.setState({ draft: '', thinking: true, offlineNotice: false, lastAsk: q, kb: false });
+    const scripted = SCRIPTS.find(s => s.match.test(q)) || FALLBACK;
+    const live = this.props.liveAI !== false && window.claude && window.claude.complete;
+    const settle = (payload, face, follow, degraded) => {
+      this.setState({ thinking: false, offlineNotice: !!degraded });
+      this.push({ from: 'woby', face: face || 'calm', text: payload.text, options: payload.options });
+      if (follow) setTimeout(() => this.push({ from: 'woby', face: follow.face, text: follow.text }), 1400);
+    };
+    if (!live) { setTimeout(() => settle(scripted, scripted.face, scripted.follow, true), 1000); return; }
+    const t0 = Date.now();
+    window.claude.complete({ system: SYSTEM, max_tokens: 700, messages: [{ role: 'user', content: q }] })
+      .then(raw => {
+        const m = String(raw).match(/\{[\s\S]*\}/);
+        const parsed = m ? JSON.parse(m[0]) : null;
+        if (!parsed || !Array.isArray(parsed.options) || !parsed.options.length) throw new Error('shape');
+        setTimeout(() => settle(parsed, scripted.face, null, false), Math.max(0, 800 - (Date.now() - t0)));
+      })
+      .catch(() => settle(scripted, scripted.face, scripted.follow, true));
+  }
+
+  openSheet(o) {
+    this.buzz(8);
+    this.setState({
+      sheetY: 0,
+      sheet: {
+        title: o.title, body: o.why, item: o,
+        cta: /taxi|bus|capsule/i.test(o.title) ? 'Do it' : 'Yes, that one',
+        rows: [{ k: 'Cost', v: o.price }, { k: 'Detail', v: o.meta }]
+      }
+    });
+  }
+
+  confirm() {
+    const s = this.state.sheet;
+    if (!s) return;
+    this.buzz(14);
+    this.setState({
+      sheet: null, planExtra: s.item,
+      toast: this.state.tellOnArrival
+        ? "All set. It's in tonight's plan, and I'll let Priya know once you're back."
+        : "All set. It's in tonight's plan — nothing sent to anyone."
+    });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: null }), 3400);
+    setTimeout(() => this.push({ from: 'woby', face: 'happy', text: "Lovely. Exit 4 whenever you're ready — I'll nudge you two minutes before it arrives." }), 700);
+  }
+
+  holdStart(o) {
+    clearTimeout(this._hold);
+    this._hold = setTimeout(() => { this.buzz(16); this.setState({ menu: o }); }, 480);
+  }
+  holdEnd() { clearTimeout(this._hold); }
+
+  swipeDown(id, e) { this._sx = e.clientX; this._sid = id; this._sStart = this.state.swipeId === id ? this.state.swipeX : 0; }
+  swipeMove(id, e) {
+    if (this._sid !== id || this._sx == null || e.buttons === 0) return;
+    const dx = Math.max(-88, Math.min(0, this._sStart + (e.clientX - this._sx)));
+    this.setState({ swipeId: id, swipeX: dx });
+  }
+  swipeUp(id) {
+    if (this._sid !== id) return;
+    const open = this.state.swipeX < -44;
+    this.setState({ swipeId: open ? id : null, swipeX: open ? -88 : 0 });
+    this._sx = null; this._sid = null;
+  }
+
+  pullStart(e) { const el = e.currentTarget; if (el.scrollTop <= 0) { this._py = e.clientY; } }
+  pullMove(e) {
+    if (this._py == null || e.buttons === 0) return;
+    const d = e.clientY - this._py;
+    if (d > 0) this.setState({ pull: Math.min(64, d * 0.5) });
+  }
+  pullEnd() {
+    if (this._py == null) return;
+    this._py = null;
+    if (this.state.pull > 40) {
+      this.buzz(10);
+      this.setState({ pull: 44, refreshing: true });
+      setTimeout(() => { this.setState({ pull: 0, refreshing: false }); this.flash('Plan is up to date. Bus 106 still leaves at 11:58.'); }, 1300);
+    } else this.setState({ pull: 0 });
+  }
+
+  type(c) {
+    if (this.state.kbTarget === 'ask') this.setState(s => ({ askDraft: s.askDraft + c }));
+    else this.setState(s => ({ draft: s.draft + c }));
+  }
+  backspace() {
+    if (this.state.kbTarget === 'ask') this.setState(s => ({ askDraft: s.askDraft.slice(0, -1) }));
+    else this.setState(s => ({ draft: s.draft.slice(0, -1) }));
+  }
+  kbDone() {
+    if (this.state.kbTarget === 'ask') this.setState({ kb: false });
+    else this.ask(this.state.draft);
+  }
+  callFor(num, note) {
+    this.setState({ alert: { title: 'Call ' + num + '?', body: note, cta: 'Call ' + num, color: '#D92B1F', run: () => { this.setState({ alert: null }); this.flash('Dialling ' + num + '. Your details are on screen.'); } } });
+  }
+
+  renderVals() {
+    const st = this.state;
+    const isApp = st.screen === 'app';
+    const tab = st.tab;
+    const tint = '#2A7BA4', dim = '#8196A1';
+
+    const msgs = st.msgs.map(m => ({
+      text: m.text,
+      fromMe: m.from === 'me',
+      fromWoby: m.from === 'woby',
+      faceBg: 'url(' + (FACE[m.face] || FACE.calm) + ')',
+      hasOptions: !!(m.options && m.options.length),
+      options: (m.options || []).map(o => ({
+        title: o.title, price: o.price, meta: o.meta, why: o.why,
+        border: o.primary ? '#71ABCB' : 'transparent',
+        onTap: () => { if (!this.state.menu) this.openSheet(o); },
+        onHold: () => this.holdStart(o),
+        onRelease: () => this.holdEnd()
+      }))
+    }));
+
+    const STATUS = {
+      missed: { label: 'Missed', ink: '#A8590C', bg: 'rgba(200,106,18,.14)' },
+      booked: { label: 'Booked', ink: '#2F7D57', bg: 'rgba(47,125,87,.14)' },
+      open: { label: 'Open', ink: '#5F7683', bg: 'rgba(95,118,131,.12)' },
+      track: { label: 'On track', ink: '#2F7D57', bg: 'rgba(47,125,87,.14)' }
+    };
+    const planItems = [{ id: 'train', time: '11:41', dur: 'missed', title: 'Last train, Namba → Tennoji', sub: 'Missed — no problem, there are other ways back.', byWoby: false, status: 'missed' }];
+    if (st.planExtra) planItems.push({ id: 'extra', time: '11:58', dur: '52 min', title: st.planExtra.title, sub: st.planExtra.meta, byWoby: true, status: 'booked' });
+    planItems.push({ id: 'hostel', time: '12:50', dur: '—', title: 'Back at Hostel Sen', sub: 'Front desk is open all night, charger behind the counter.', byWoby: false, status: st.planExtra ? 'track' : 'open' });
+
+    const plan = planItems.filter(p => !st.removed[p.id]).map(p => ({
+      time: p.time, dur: p.dur, title: p.title, sub: p.sub, byWoby: p.byWoby,
+      status: STATUS[p.status].label,
+      statusInk: STATUS[p.status].ink,
+      statusBg: STATUS[p.status].bg,
+      x: st.swipeId === p.id ? st.swipeX + 'px' : '0px',
+      onDown: e => this.swipeDown(p.id, e),
+      onMove: e => this.swipeMove(p.id, e),
+      onUp: () => this.swipeUp(p.id),
+      onTap: () => { if (st.swipeId === p.id && st.swipeX < -10) this.setState({ swipeId: null, swipeX: 0 }); },
+      onRemove: () => {
+        this.buzz(14);
+        this.setState(s => ({ removed: Object.assign({}, s.removed, { [p.id]: true }), swipeId: null, swipeX: 0 }));
+        this.flash("Removed from tonight. Tell me if you'd like it back.");
+      }
+    }));
+
+    const trip = [
+      { label: 'Stays', amount: '€214', dot: tint },
+      { label: 'Food', amount: '€138', dot: '#71ABCB' },
+      { label: 'Trains', amount: '€61', dot: '#A7CADD' },
+      { label: 'Tonight, unplanned', amount: '€14', dot: '#F29A2D' }
+    ];
+    const today = [
+      { label: 'Breakfast', amount: '€6', dot: '#71ABCB' },
+      { label: 'Day pass', amount: '€8', dot: '#A7CADD' },
+      { label: 'Dinner, Dōtonbori', amount: '€24', dot: '#71ABCB' },
+      { label: 'Tonight, unplanned', amount: '€14', dot: '#F29A2D' }
+    ];
+    const spendRows = (st.seg === 'today' ? today : trip).map((s, i) =>
+      Object.assign({}, s, {
+        sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)',
+        ink: /unplanned/i.test(s.label) ? '#A8590C' : '#16323F'
+      }));
+
+    const white = '#fff', clear = 'transparent';
+    const allItems = PACKING.concat(BEFORE);
+    const doneCount = allItems.filter(i => st.checked[i.id]).length;
+    const kbKeys = row => row.split('').map(c => ({ c, onTap: () => this.type(c) }));
+
+    return {
+      clock: '11:04',
+      isOnboard: st.screen === 'onboard',
+      isNow: isApp && tab === 'now',
+      isPlan: isApp && tab === 'plan',
+      isNearby: isApp && tab === 'nearby',
+      isMoney: isApp && tab === 'money',
+      isSafety: isApp && tab === 'safety',
+      showTabs: isApp && !st.kb,
+      nowBottom: st.kb ? '291px' : '83px',
+
+      isStep0: st.step === 0,
+      isStep1: st.step === 1,
+      isStep2: st.step === 2,
+      canGoBack: st.step > 0,
+      step1Op: st.step >= 1 ? 1 : 0.25,
+      step2Op: st.step >= 2 ? 1 : 0.25,
+      onboardCta: ["Let's go", 'Next', "That's everything"][st.step] || 'Next',
+      onboardNext: () => { this.buzz(8); st.step >= 2 ? this.setState({ screen: 'app' }) : this.setState({ step: st.step + 1 }); },
+      onboardBack: () => st.step > 0 && this.setState({ step: st.step - 1 }),
+      city: st.city,
+      onCity: e => this.setState({ city: e.target.value }),
+      offlineTrackBg: st.offline ? tint : 'rgba(22,50,63,.16)',
+      offlineKnobLeft: st.offline ? '22px' : '2px',
+      toggleOffline: () => { this.buzz(8); this.setState({ offline: !st.offline }); },
+
+      msgs, thinking: st.thinking,
+      isEmpty: !st.msgs.length && !st.thinking,
+      offlineNotice: st.offlineNotice,
+      retry: () => { this.setState({ offlineNotice: false }); this.ask(st.lastAsk); },
+      chips: [
+        { label: 'I missed the last train', onTap: () => this.ask('I missed the last train') },
+        { label: "I'm over budget", onTap: () => this.ask("I'm over budget") },
+        { label: "I'm low on energy", onTap: () => this.ask("I'm low on energy") },
+        { label: "I'm not feeling great", onTap: () => this.ask("I'm not feeling great") }
+      ],
+      draft: st.draft,
+      send: () => this.ask(st.draft),
+      mic: () => this.ask('I missed the last train'),
+      sendBg: st.draft.trim() ? tint : 'rgba(22,50,63,.22)',
+      scrollRef: el => { this.scrollEl = el; },
+
+      kb: st.kb,
+      openKb: () => this.setState({ kb: true, kbTarget: 'now' }),
+      openAskKb: () => this.setState({ kb: true, kbTarget: 'ask' }),
+      askFieldBorder: st.kb && st.kbTarget === 'ask' ? '#71ABCB' : 'transparent',
+      call119: () => this.callFor('119', 'Ambulance and fire. English support is available, though it can take a moment.'),
+      call110: () => this.callFor('110', 'Police. Use this if you feel threatened or unsafe.'),
+      closeKb: () => this.setState({ kb: false }),
+      kbRow1: kbKeys('qwertyuiop'),
+      kbRow2: kbKeys('asdfghjkl'),
+      kbRow3: kbKeys('zxcvbnm'),
+      kbSpace: () => this.type(' '),
+      kbBack: () => this.backspace(),
+      kbReturn: () => this.kbDone(),
+      kbReturnLabel: st.kbTarget === 'ask' ? 'done' : 'send',
+
+      plan,
+      pullH: (st.pull || 0) + 'px',
+      pullStart: e => this.pullStart(e),
+      pullMove: e => this.pullMove(e),
+      pullEnd: () => this.pullEnd(),
+      navOp: st.navSolid ? 1 : 0,
+      onPlanScroll: e => {
+        const solid = e.currentTarget.scrollTop > 34;
+        if (solid !== this.state.navSolid) this.setState({ navSolid: solid });
+      },
+
+      seg: st.seg,
+      segToday: () => { this.buzz(6); this.setState({ seg: 'today' }); },
+      segTrip: () => { this.buzz(6); this.setState({ seg: 'trip' }); },
+      segTodayBg: st.seg === 'today' ? white : clear,
+      segTripBg: st.seg === 'trip' ? white : clear,
+      segTodayShadow: st.seg === 'today' ? '0 2px 6px rgba(22,50,63,.14)' : 'none',
+      segTripShadow: st.seg === 'trip' ? '0 2px 6px rgba(22,50,63,.14)' : 'none',
+      ringOffset: st.seg === 'today' ? 190 : 98,
+      ringInk: st.seg === 'today' ? '#A8590C' : '#2F7D57',
+      ringPillBg: st.seg === 'today' ? 'rgba(200,106,18,.14)' : 'rgba(47,125,87,.14)',
+      ringStatus: st.seg === 'today' ? 'Tight today' : 'On track',
+      ringAmount: st.seg === 'today' ? '€62' : '€418',
+      ringCaption: st.seg === 'today' ? 'of €110 left today' : 'of €580 left',
+      spend: spendRows,
+      keepChanges: () => this.flash("Kept. I'll leave the rest of the week as it is."),
+      undoChanges: () => this.flash('Undone. Both dinners are back on the plan.'),
+
+      shareValue: (SHARE.find(s => s.key === st.share) || SHARE[3]).short,
+      shareInk: st.share === 'none' ? '#5F7683' : '#2F7D57',
+      shareTile: st.share === 'none' ? 'rgba(95,118,131,.12)' : 'rgba(47,125,87,.14)',
+      shareNote: (SHARE.find(s => s.key === st.share) || SHARE[3]).note,
+      shareOptions: SHARE.map((o, i) => ({
+        label: o.label,
+        on: st.share === o.key ? 1 : 0,
+        sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)',
+        onTap: () => { this.buzz(8); this.setState({ share: o.key }); }
+      })),
+      dataSources: [
+        { key: 'location', label: 'Where you are', detail: 'Used to work out what is walkable right now.' },
+        { key: 'plan', label: 'Your plan', detail: 'Bookings and times you have added yourself.' },
+        { key: 'spend', label: 'What you have spent', detail: 'Typed in by you. Never linked to a bank.' },
+        { key: 'battery', label: 'Battery and signal', detail: 'Used to suggest options that do not need a phone.' }
+      ].map((d, i) => {
+        const on = this.state['ds_' + d.key] !== false;
+        return {
+          label: d.label, detail: d.detail,
+          sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)',
+          track: on ? tint : 'rgba(22,50,63,.16)',
+          knob: on ? '22px' : '2px',
+          onTap: () => { this.buzz(8); this.setState({ ['ds_' + d.key]: !on }); }
+        };
+      }),
+      confirmWipe: () => this.setState({
+        alert: {
+          title: 'Delete everything?',
+          body: 'Your trip, plan and spending are removed from this phone. This cannot be undone.',
+          cta: 'Delete', color: '#D92B1F',
+          run: () => { this.setState({ alert: null, push: null }); this.flash('Deleted. Warbler is back to knowing nothing.'); }
+        }
+      }),
+      openHelp: () => this.setState({
+        alert: {
+          title: 'Call 119?',
+          body: 'Fire and ambulance in Japan. Warbler will show Priya and your insurance details on screen while you talk.',
+          cta: 'Call 119', color: '#D92B1F',
+          run: () => { this.setState({ alert: null }); this.flash('Calling 119. Your details are on screen.'); }
+        }
+      }),
+      tellPriya: () => { this.buzz(12); this.flash('Sent. Short and sweet.'); },
+
+      pushed: !!st.push,
+      pushTitle: st.push ? PUSH_TITLES[st.push] : '',
+      pushBottom: st.kb ? '291px' : '0px',
+      backLabel: ({ now: 'Right now', plan: 'Plan', nearby: 'Nearby', money: 'Money', safety: 'Support' })[tab] || 'Back',
+      isLocationScreen: st.push === 'location',
+      isContactScreen: st.push === 'contact',
+      isDataScreen: st.push === 'data',
+      isPrepScreen: st.push === 'prep',
+      isReflectScreen: st.push === 'reflect',
+      isAskScreen: st.push === 'ask',
+      isAnswerScreen: st.push === 'answer',
+      isGuideScreen: st.push === 'guide',
+      isTriageScreen: st.push === 'triage',
+      pushContact: () => this.setState({ push: 'contact' }),
+      pushPrep: () => this.setState({ push: 'prep' }),
+      pushReflect: () => this.setState({ push: 'reflect', reflectStep: 0, reflectPicks: {} }),
+      pushAsk: () => this.setState({ push: 'ask' }),
+      pushTriage: () => this.setState({ push: 'triage' }),
+      pushLocation: () => this.setState({ push: 'location' }),
+      pushData: () => this.setState({ push: 'data' }),
+      popStack: () => { this.buzz(6); this.setState({ push: null }); },
+
+      goNow: () => this.setState({ screen: 'app', tab: 'now', push: null, navSolid: false }),
+      goPlan: () => this.setState({ screen: 'app', tab: 'plan', push: null, navSolid: false }),
+      goNearby: () => this.setState({ screen: 'app', tab: 'nearby', push: null, navSolid: false }),
+      goMoney: () => this.setState({ screen: 'app', tab: 'money', push: null, navSolid: false }),
+      goSafety: () => this.setState({ screen: 'app', tab: 'safety', push: null, navSolid: false }),
+      cNow: tab === 'now' ? tint : dim,
+      cPlan: tab === 'plan' ? tint : dim,
+      cNearby: tab === 'nearby' ? tint : dim,
+      cMoney: tab === 'money' ? tint : dim,
+      cSafety: tab === 'safety' ? tint : dim,
+
+      sheet: !!st.sheet,
+      sheetTitle: st.sheet ? st.sheet.title : '',
+      sheetBody: st.sheet ? st.sheet.body : '',
+      sheetCta: st.sheet ? st.sheet.cta : '',
+      sheetRows: st.sheet ? st.sheet.rows.map((r, i) => Object.assign({}, r, { sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)' })) : [],
+      sheetY: (st.sheetY || 0) + 'px',
+      sheetDown: e => { this._shy = e.clientY; },
+      sheetMove: e => { if (this._shy != null && e.buttons !== 0) this.setState({ sheetY: Math.max(0, e.clientY - this._shy) }); },
+      sheetUp: () => {
+        if (this._shy == null) return;
+        this._shy = null;
+        if (st.sheetY > 90) this.setState({ sheet: null, sheetY: 0 });
+        else this.setState({ sheetY: 0 });
+      },
+      closeSheet: () => this.setState({ sheet: null, sheetY: 0 }),
+      confirmSheet: () => this.confirm(),
+      toggleTell: () => { this.buzz(8); this.setState({ tellOnArrival: !st.tellOnArrival }); },
+      tellTrackBg: st.tellOnArrival ? tint : 'rgba(22,50,63,.16)',
+      tellKnobLeft: st.tellOnArrival ? '22px' : '2px',
+
+      menu: !!st.menu,
+      closeMenu: () => this.setState({ menu: null }),
+      menuItems: [
+        { label: 'Why this one?', color: '#16323F', sep: 'transparent', onTap: () => { this.setState({ menu: null }); this.push({ from: 'woby', face: 'calm', text: 'Mostly the timing and the walk — it lines up with where you are and what you have left tonight.' }); } },
+        { label: 'Show me something else', color: '#16323F', sep: 'rgba(22,50,63,.18)', onTap: () => { this.setState({ menu: null }); this.ask('Show me another option'); } },
+        { label: 'Not helpful', color: '#D92B1F', sep: 'rgba(22,50,63,.18)', onTap: () => { this.setState({ menu: null }); this.flash("Noted. I'll steer away from that sort of suggestion."); } }
+      ],
+
+      alert: !!st.alert,
+      alertTitle: st.alert ? st.alert.title : '',
+      alertBody: st.alert ? st.alert.body : '',
+      alertCta: st.alert ? st.alert.cta : '',
+      alertColor: st.alert ? st.alert.color : tint,
+      alertCancel: () => this.setState({ alert: null }),
+      alertConfirm: () => { this.buzz(16); st.alert && st.alert.run(); },
+
+      // ---- Nearby ----
+      isAnswersTab: st.nearSeg === 'answers',
+      isGuidesTab: st.nearSeg === 'guides',
+      nearAnswers: () => { this.buzz(6); this.setState({ nearSeg: 'answers' }); },
+      nearGuides: () => { this.buzz(6); this.setState({ nearSeg: 'guides' }); },
+      nearAnswersBg: st.nearSeg === 'answers' ? white : clear,
+      nearGuidesBg: st.nearSeg === 'guides' ? white : clear,
+      nearAnswersShadow: st.nearSeg === 'answers' ? '0 2px 6px rgba(22,50,63,.14)' : 'none',
+      nearGuidesShadow: st.nearSeg === 'guides' ? '0 2px 6px rgba(22,50,63,.14)' : 'none',
+      answers: ANSWERS.map(a => ({
+        q: a.q, short: a.short, agree: a.agree, when: a.when,
+        onTap: () => this.setState({ push: 'answer', activeAnswer: a.id })
+      })),
+      guides: GUIDES.map((g, i) => ({
+        title: g.title, sub: g.sub,
+        tile: ['rgba(42,123,164,.14)', 'rgba(47,125,87,.14)', 'rgba(167,202,221,.5)', 'rgba(217,43,31,.12)'][i],
+        ink: ['#2A7BA4', '#2F7D57', '#16323F', '#D92B1F'][i],
+        icon: [
+          'M6 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM4 10h12M7 15l-2 2M13 15l2 2M7 7h6',
+          'M3 6h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM10 8.2a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6',
+          'M10 15.5h.01M3 7.4a10 10 0 0 1 14 0M5.6 10.3a6.3 6.3 0 0 1 8.8 0',
+          'M10 2.5 17 5.3v5.2c0 4-3 7.1-7 8.2-4-1.1-7-4.2-7-8.2V5.3L10 2.5ZM10 7v3.6M10 13.4h.01'
+        ][i],
+        sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)',
+        onTap: () => this.setState({ push: 'guide', activeGuide: g.id })
+      })),
+      answerQ: (ANSWERS.find(a => a.id === st.activeAnswer) || ANSWERS[0]).q,
+      answerMeta: (ANSWERS.find(a => a.id === st.activeAnswer) || ANSWERS[0]).agree + ' · ' + (ANSWERS.find(a => a.id === st.activeAnswer) || ANSWERS[0]).when,
+      answerReplies: (ANSWERS.find(a => a.id === st.activeAnswer) || ANSWERS[0]).replies,
+      guideTitle: (GUIDES.find(g => g.id === st.activeGuide) || GUIDES[0]).title,
+      guideIntro: (GUIDES.find(g => g.id === st.activeGuide) || GUIDES[0]).intro,
+      guidePoints: (GUIDES.find(g => g.id === st.activeGuide) || GUIDES[0]).points.map((p, i) =>
+        Object.assign({}, p, { sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)' })),
+
+      // ---- Ask ----
+      askDraft: st.askDraft,
+      askSuggestions: [
+        { label: 'Is it safe right now?', onTap: () => this.setState({ askDraft: 'Is the canal path east of Namba okay to walk at this hour?' }) },
+        { label: 'How much should this cost?', onTap: () => this.setState({ askDraft: 'What should a taxi from Namba to Tennoji cost at midnight?' }) },
+        { label: 'Is this normal here?', onTap: () => this.setState({ askDraft: 'Is it odd to walk into a capsule hotel without booking?' }) }
+      ],
+      anon: st.anon,
+      toggleAnon: () => { this.buzz(8); this.setState({ anon: !st.anon }); },
+      anonTrack: st.anon ? tint : 'rgba(22,50,63,.16)',
+      anonKnob: st.anon ? '22px' : '2px',
+      toggleArea: () => { this.buzz(8); this.setState({ withArea: !st.withArea }); },
+      areaTrack: st.withArea ? tint : 'rgba(22,50,63,.16)',
+      areaKnob: st.withArea ? '22px' : '2px',
+      sendAsk: () => {
+        this.buzz(12);
+        this.setState({ push: null });
+        this.flash(st.offline ? "Queued. It'll go out the moment you have signal." : 'Posted. Answers will land in Nearby.');
+      },
+
+      // ---- Trip prep ----
+      prepPacking: () => { this.buzz(6); this.setState({ prepSeg: 'packing' }); },
+      prepBefore: () => { this.buzz(6); this.setState({ prepSeg: 'before' }); },
+      packBg: st.prepSeg === 'packing' ? white : clear,
+      beforeBg: st.prepSeg === 'before' ? white : clear,
+      packShadow: st.prepSeg === 'packing' ? '0 2px 6px rgba(22,50,63,.14)' : 'none',
+      beforeShadow: st.prepSeg === 'before' ? '0 2px 6px rgba(22,50,63,.14)' : 'none',
+      prepCount: doneCount + ' of ' + allItems.length + ' done',
+      prepSummary: doneCount === allItems.length ? 'All done. Nothing left to think about.' : (allItems.length - doneCount) + ' left, and none of them are urgent',
+      prepPct: Math.round((doneCount / allItems.length) * 100) + '%',
+      prepEncouragement: doneCount === allItems.length
+        ? "That's everything. You can stop thinking about the list now."
+        : 'No rush and no streak to break. Tick them off whenever it suits.',
+      checklist: (st.prepSeg === 'packing' ? PACKING : BEFORE).map((c, i) => {
+        const on = !!st.checked[c.id];
+        return {
+          label: c.label, note: c.note,
+          sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)',
+          ring: on ? tint : 'rgba(22,50,63,.28)',
+          fill: on ? tint : 'transparent',
+          tick: on ? 1 : 0,
+          labelColor: on ? '#5F7683' : '#16323F',
+          strike: on ? 'line-through' : 'none',
+          onTap: () => {
+            this.buzz(8);
+            this.setState(s => {
+              const next = Object.assign({}, s.checked);
+              if (next[c.id]) delete next[c.id]; else next[c.id] = 1;
+              return { checked: next };
+            });
+          }
+        };
+      }),
+
+      // ---- Reflection ----
+      reflectDone: st.reflectStep >= REFLECT.length,
+      reflectAsking: st.reflectStep < REFLECT.length,
+      reflectProgress: 'Question ' + Math.min(st.reflectStep + 1, REFLECT.length) + ' of ' + REFLECT.length,
+      reflectQuestion: (REFLECT[st.reflectStep] || REFLECT[0]).q,
+      reflectOptions: (REFLECT[st.reflectStep] || REFLECT[0]).a.map((label, i) => ({
+        label, letter: 'ABCDE'[i],
+        border: st.reflectPicks[st.reflectStep] === i ? '#71ABCB' : 'transparent',
+        onTap: () => {
+          this.buzz(8);
+          this.setState(s => ({
+            reflectPicks: Object.assign({}, s.reflectPicks, { [s.reflectStep]: i }),
+            reflectStep: s.reflectStep + 1
+          }));
+        }
+      })),
+      reflectSkip: () => this.setState(s => ({ reflectStep: s.reflectStep + 1 })),
+      reflectRestart: () => this.setState({ reflectStep: 0, reflectPicks: {} }),
+      reflectTakeaways: [
+        { text: 'You handled a missed last train, on your own, in a language you do not speak.', sep: 'transparent' },
+        { text: 'Next trip I will suggest slower days and fewer early starts, since that is what wore you down.', sep: 'rgba(22,50,63,.18)' },
+        { text: 'You came in €162 under on the week you thought you had overspent.', sep: 'rgba(22,50,63,.18)' }
+      ],
+
+      // ---- Triage ----
+      triageLevels: ['now', 'soon', 'minute'].map(k => ({
+        label: TRIAGE[k].label, body: TRIAGE[k].body, dot: TRIAGE[k].dot,
+        suggested: k === 'soon',
+        border: st.triage === k ? '#71ABCB' : 'transparent',
+        onTap: () => { this.buzz(8); this.setState({ triage: k }); }
+      })),
+      triageActionsTitle: TRIAGE[st.triage].title,
+      triageActions: TRIAGE[st.triage].actions.map((a, i) => ({
+        label: a.label, note: a.note, color: a.color,
+        sep: i === 0 ? 'transparent' : 'rgba(22,50,63,.18)',
+        onTap: () => {
+          if (/^Call/.test(a.label)) {
+            this.callFor(a.label.replace(/^Call\s*/, ''), a.note + ' Warbler will show your details on screen while you talk.');
+          } else if (/Breathe/.test(a.label)) {
+            this.flash("Four in, six out. I'll count with you.");
+          } else if (/Priya/.test(a.label)) {
+            this.setState({ push: null, tab: 'safety' });
+            this.flash("Draft is ready on the Support tab. Nothing sent yet.");
+          } else {
+            this.flash('On screen now. Take your time.');
+          }
+        }
+      })),
+
+      toast: st.toast
+    };
+  }
+}
+
+</script>
+</body>
+</html>

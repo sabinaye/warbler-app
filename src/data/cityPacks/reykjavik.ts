@@ -1,0 +1,183 @@
+import { CityPack } from './types';
+
+export const reykjavik: CityPack = {
+  key: 'rvk',
+  match: /reykjav|iceland/i,
+  city: 'Reykjavík',
+  country: 'Iceland',
+  area: 'Laugavegur',
+  area2: 'Vesturbær',
+  stay: 'Kex Hostel',
+  currencySymbol: 'kr',
+  cashAdvice: 'kr 5,000',
+  transitCard: 'Klappið',
+  nightBus: 'Night bus 101',
+  nightBusShort: '101',
+  lateNightShop: '10-11',
+  warmPlaceLine: '10-11 on this corner, open late, warm, and nobody minds you sitting.',
+  pharmacy: 'Lyfja Lágmúla',
+  pharmacyMeta: '1.4 km · open till midnight',
+  pharmacyPhrase: 'Everyone at the counter speaks English — just ask for something for a fever.',
+  policeEquivalent: 'police station',
+  policeNote: 'Station on Hverfisgata, 600 m. Everyone there speaks English.',
+  dayTrip: 'Þingvellir',
+  dayTripMeta: '50 min on the coach',
+  sight: 'Hallgrímskirkja',
+  treat: 'tasting menu',
+  helpPhrase: 'Everyone speaks English here. "Can you help me?" is enough.',
+  plugAdvice: 'Iceland uses Type F. Your UK plugs will not fit.',
+  embassy: 'British Embassy Reykjavík handles lost passports, on Laufásvegur.',
+  atmAdvice: 'You barely need cash. Cards work everywhere, including buses and rural petrol stations.',
+  clinicCost: 'kr 12,000',
+  lastTrain: '23:20',
+  backTime: '23:55',
+  emergencyNumbers: [
+    { num: '112', note: 'Ambulance, fire, police and mountain rescue on one number. Fluent English.' },
+  ],
+  emergencyCaption: '112 reaches ambulance, fire, police and rescue. Always here, whatever you pick below.',
+  askDraft: 'Is Laugavegur okay to walk down around midnight?',
+  askSuggestions: [
+    'Is Laugavegur okay to walk down around midnight?',
+    'How late do the buses actually run from the centre?',
+    'Is it odd to eat at a soup place alone here?',
+  ],
+  answers: [
+    {
+      id: 'a1',
+      cat: 'safety',
+      question: 'Is Laugavegur okay to walk down around midnight?',
+      shortAnswer: 'Yes. Busy, lit, and one of the safest city centres you will walk in.',
+      agreeCount: '14 travellers',
+      freshness: 'Updated 2 days ago',
+      replies: [
+        {
+          who: 'Traveller in Reykjavík',
+          when: '2 days ago',
+          text: 'Walked it at half twelve on a Tuesday. Quiet but completely fine, and plenty of people about.',
+        },
+        {
+          who: 'Traveller in Akureyri',
+          when: '2 weeks ago',
+          text: 'Weekend nights get loud around the bars rather than unsafe. Wind is the thing to dress for.',
+        },
+      ],
+    },
+    {
+      id: 'a2',
+      cat: 'payments',
+      question: 'Do I need cash for anything at all?',
+      shortAnswer: 'Almost never. Cards work on buses, in cafés, and at rural petrol pumps.',
+      agreeCount: '19 travellers',
+      freshness: 'Updated 5 days ago',
+      replies: [
+        {
+          who: 'Traveller in Reykjavík',
+          when: '5 days ago',
+          text: 'Ten days, never took out a note. Contactless everywhere, including the swimming pools.',
+        },
+        {
+          who: 'Traveller in Selfoss',
+          when: '3 weeks ago',
+          text: 'Bring your PIN though. Some unmanned pumps want it rather than a tap.',
+        },
+      ],
+    },
+    {
+      id: 'a3',
+      cat: 'logistics',
+      question: 'Hostels in 101 — book ahead or walk in?',
+      shortAnswer: 'Book ahead. The centre is small and fills up, especially in aurora season.',
+      agreeCount: '8 travellers',
+      freshness: 'Updated 1 week ago',
+      replies: [
+        {
+          who: 'Traveller in Reykjavík',
+          when: '1 week ago',
+          text: 'Tried walking in on a Friday in October and everything in 101 was full. Booked from a café in the end.',
+        },
+        {
+          who: 'Traveller in Keflavík',
+          when: '1 month ago',
+          text: 'Midweek in shoulder season you can usually chance it, and it is cheaper.',
+        },
+      ],
+    },
+    {
+      id: 'a4',
+      cat: 'practical',
+      question: 'Eating alone in the evening — is it odd here?',
+      shortAnswer: 'Not at all. Soup and hot dog counters are built for one person standing up.',
+      agreeCount: '12 travellers',
+      freshness: 'Updated 3 days ago',
+      replies: [
+        {
+          who: 'Traveller in Reykjavík',
+          when: '3 days ago',
+          text: 'Sat alone with a bread bowl of soup and a book. Nobody looked twice.',
+        },
+        {
+          who: 'Traveller in Reykjavík',
+          when: '2 weeks ago',
+          text: 'The hot dog stand by the harbour is the least self-conscious meal in the city.',
+        },
+      ],
+    },
+  ],
+  guides: [
+    {
+      id: 'g1',
+      title: 'Getting around',
+      subtitle: 'Klappið, last buses, walking',
+      intro: 'The centre is walkable end to end, and the buses stop earlier than you expect.',
+      points: [
+        { heading: 'The centre is 25 minutes wide', body: 'Most nights you will not need a bus at all. Dress for wind rather than distance.' },
+        { heading: 'Buses use the Klappið app', body: 'Buy single fares or a day pass in the app. Cards work at the door too.' },
+        {
+          heading: 'Last buses around 23:20',
+          body: 'Strætó winds down late evening. Weekend night buses, the 101 series, run after that.',
+        },
+        { heading: 'Taxis are metered and pricey', body: 'Hreyfill and BSR are the two to call. There is no Uber here.' },
+      ],
+    },
+    {
+      id: 'g2',
+      title: 'Paying for things',
+      subtitle: 'Cards for everything, króna in your head',
+      intro: 'Iceland is as close to cashless as anywhere you will go — the harder part is the arithmetic.',
+      points: [
+        { heading: 'Carry kr 5,000 at most', body: 'A small buffer for a locker or a tip. Everything else takes a card.' },
+        { heading: 'Know the rough rate', body: 'Divide by about 175 for pounds. It stops the first few bills from being a shock.' },
+        { heading: 'Tap water is the free luxury', body: 'Never buy bottled. Fill up anywhere and save a genuine chunk per day.' },
+      ],
+    },
+    {
+      id: 'g3',
+      title: 'Staying connected',
+      subtitle: 'eSIM, coverage, offline maps',
+      intro: 'City coverage is excellent and the interior is not, so download before you leave the centre.',
+      points: [
+        { heading: 'eSIM is the simplest', body: 'Install before you fly, switch on when you land. No shop visit, no deposit.' },
+        { heading: 'Download maps offline', body: 'Do it on hostel wifi on day one. The single most useful thing on this list.' },
+        {
+          heading: 'Check the weather app daily',
+          body: 'vedur.is and safetravel.is are what locals actually use before driving anywhere.',
+        },
+      ],
+    },
+    {
+      id: 'g4',
+      title: 'If something goes wrong',
+      subtitle: 'Numbers, clinics, embassies',
+      intro: 'Worth reading once now, while nothing is wrong, so you are not reading it for the first time later.',
+      points: [
+        { heading: '112 for everything', body: 'Ambulance, fire, police and mountain rescue on one number, in fluent English.' },
+        {
+          heading: 'Læknavaktin out of hours',
+          body: 'The evening clinic in Kópavogur handles anything a pharmacy cannot. Around kr 12,000.',
+        },
+        { heading: 'Your embassy', body: 'British Embassy Reykjavík handles lost passports, on Laufásvegur.' },
+        { heading: 'You will be understood', body: 'English is near-universal here. Say what has happened plainly and you will get help.' },
+      ],
+    },
+  ],
+};
