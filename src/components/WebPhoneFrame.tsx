@@ -1,10 +1,17 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import { SafeAreaFrameContext, SafeAreaInsetsContext, SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { color } from '../theme/tokens';
 import { useBatteryLevel } from '../hooks/useBatteryLevel';
+
+// Where AppModal.web portals its content (sheets, alerts, the calendar). Must be a DOM node
+// that's the LAST child inside `frame` below, so anything portaled into it paints above the
+// status bar, tab bar and tour overlay regardless of where in the component tree the modal that
+// opened it actually lives — z-index alone can't do that once modals stop being true RN <Modal>s,
+// since it only wins within its own stacking context, not against uncles elsewhere in the tree.
+export const FramePortalContext = createContext<HTMLElement | null>(null);
 
 // Expo's static web export's index.html has no background set on <html>/<body> (react-native-web's
 // own reset only sets height, not colour) — so any render delay or crash shows the browser's
@@ -85,6 +92,7 @@ export function WebPhoneFrame({ children }: WebPhoneFrameProps) {
   const { width, height } = useWindowDimensions();
   const clock = useClock();
   const batteryLevel = useBatteryLevel();
+  const [portalNode, setPortalNode] = useState<HTMLElement | null>(null);
 
   const isFramed = Platform.OS === 'web' && width >= FRAME_THRESHOLD_WIDTH;
 
@@ -107,24 +115,34 @@ export function WebPhoneFrame({ children }: WebPhoneFrameProps) {
           only ever held for one frame. Supplying the contexts directly skips that measurement
           entirely and makes the fake insets stick.
         */}
-        <SafeAreaInsetsContext.Provider value={SAFE_AREA_INSETS}>
-          <SafeAreaFrameContext.Provider value={{ x: 0, y: 0, width: FRAME_WIDTH, height: FRAME_HEIGHT }}>
-            {children}
-          </SafeAreaFrameContext.Provider>
-        </SafeAreaInsetsContext.Provider>
+        <FramePortalContext.Provider value={portalNode}>
+          <SafeAreaInsetsContext.Provider value={SAFE_AREA_INSETS}>
+            <SafeAreaFrameContext.Provider value={{ x: 0, y: 0, width: FRAME_WIDTH, height: FRAME_HEIGHT }}>
+              {children}
+            </SafeAreaFrameContext.Provider>
+          </SafeAreaInsetsContext.Provider>
 
-        <View style={styles.statusBar} pointerEvents="none">
-          <Text style={styles.clockText}>{clock}</Text>
-          <View style={styles.dynamicIsland} />
-          <View style={styles.statusIconsRow}>
-            <SignalIcon />
-            <BatteryGlyph level={batteryLevel} />
+          <View style={styles.statusBar} pointerEvents="none">
+            <Text style={styles.clockText}>{clock}</Text>
+            <View style={styles.dynamicIsland} />
+            <View style={styles.statusIconsRow}>
+              <SignalIcon />
+              <BatteryGlyph level={batteryLevel} />
+            </View>
           </View>
-        </View>
 
-        <View style={styles.homeIndicatorArea} pointerEvents="none">
-          <View style={styles.homeIndicator} />
-        </View>
+          <View style={styles.homeIndicatorArea} pointerEvents="none">
+            <View style={styles.homeIndicator} />
+          </View>
+
+          {/* Last child, so anything portaled here paints above everything else in the frame. */}
+          <View
+            // @ts-expect-error react-native-web forwards View refs to the underlying DOM node.
+            ref={setPortalNode}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="box-none"
+          />
+        </FramePortalContext.Provider>
       </View>
     </View>
   );

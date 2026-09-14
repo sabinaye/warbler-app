@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { AccessibilityRole, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AccessibilityRole, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Avatar } from '../../../components/primitives/Avatar';
+import { AppModal } from '../../../components/primitives/AppModal';
 import { CheckAgreeIcon, PlusIcon } from '../../../components/icons/icons';
 import { color, radius, touchTarget } from '../../../theme/tokens';
 import { useAppStore } from '../../../state/store';
@@ -101,7 +102,7 @@ function AddContactModal({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onCancel}>
+    <AppModal visible={visible} animationType="slide" onRequestClose={onCancel}>
       <View style={modalStyles.backdrop}>
         <Pressable style={{ flex: 1 }} onPress={onCancel} accessibilityElementsHidden />
         <View style={modalStyles.sheet}>
@@ -133,7 +134,7 @@ function AddContactModal({
           <Text style={modalStyles.footnote}>Stored on this phone only. They get nothing until you send them something.</Text>
         </View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

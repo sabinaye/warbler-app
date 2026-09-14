@@ -5,6 +5,7 @@ import { CityPack } from '../data/cityPacks/types';
 const PACK_FIELD_MAP: Partial<Record<string, keyof CityPack>> = {
   city: 'city',
   stay: 'stay',
+  bus: 'nightBus',
   shop: 'lateNightShop',
   pharm: 'pharmacy',
   pharmMeta: 'pharmacyMeta',

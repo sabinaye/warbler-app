@@ -1,8 +1,9 @@
-import { AccessibilityRole, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityRole, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { WOBY } from '../../assets/woby';
 import { MessageOption } from '../../domain/conversation';
 import { color, radius } from '../../theme/tokens';
+import { AppModal } from './AppModal';
 
 type OptionConfirmSheetProps = {
   option: MessageOption | null;
@@ -17,7 +18,7 @@ export function OptionConfirmSheet({ option, onCancel, onConfirm }: OptionConfir
   const cta = option && /taxi|bus|capsule/i.test(option.title) ? 'Do it' : 'Yes, that one';
 
   return (
-    <Modal visible={!!option} transparent animationType="slide" onRequestClose={onCancel}>
+    <AppModal visible={!!option} animationType="slide" onRequestClose={onCancel}>
       <View style={styles.backdrop}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onCancel} accessibilityElementsHidden />
         {option ? (
@@ -54,7 +55,7 @@ export function OptionConfirmSheet({ option, onCancel, onConfirm }: OptionConfir
           </View>
         ) : null}
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

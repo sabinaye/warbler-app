@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { AccessibilityRole, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityRole, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { color, radius } from '../../theme/tokens';
 import { ChevronBackIcon } from '../icons/icons';
+import { AppModal } from './AppModal';
 
 // A real month calendar (correct weekday alignment, month navigation) replacing the prototype's
 // fixed "March 2027, 31 bare cells" toy grid — the interaction pattern (tap start, then end;
@@ -105,7 +106,7 @@ export function CalendarSheet({ visible, initialStart, initialEnd, onClose, onCo
   }
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={styles.backdrop}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityElementsHidden />
         <View style={styles.sheet}>
@@ -182,7 +183,7 @@ export function CalendarSheet({ visible, initialStart, initialEnd, onClose, onCo
           </Pressable>
         </View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

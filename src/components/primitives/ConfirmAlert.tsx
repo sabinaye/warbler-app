@@ -1,7 +1,8 @@
-import { AccessibilityRole, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityRole, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 import { color } from '../../theme/tokens';
+import { AppModal } from './AppModal';
 
 export type ConfirmAlertConfig = {
   title: string;
@@ -21,7 +22,7 @@ type ConfirmAlertProps = {
 // never fire the side effect directly from a row/button tap.
 export function ConfirmAlert({ config, onCancel }: ConfirmAlertProps) {
   return (
-    <Modal visible={!!config} transparent animationType="fade" onRequestClose={onCancel}>
+    <AppModal visible={!!config} animationType="fade" onRequestClose={onCancel}>
       <View style={styles.backdrop}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onCancel} accessibilityElementsHidden />
         {config ? (
@@ -55,7 +56,7 @@ export function ConfirmAlert({ config, onCancel }: ConfirmAlertProps) {
           </View>
         ) : null}
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

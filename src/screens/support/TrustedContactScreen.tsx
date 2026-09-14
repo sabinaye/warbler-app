@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   AccessibilityRole,
-  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import {
 import { Avatar } from '../../components/primitives/Avatar';
 import { GroupedList, GroupedRow } from '../../components/primitives/GroupedList';
 import { PushedScreen } from '../../components/primitives/PushedScreen';
+import { AppModal } from '../../components/primitives/AppModal';
 import { CheckmarkIcon, PlusIcon } from '../../components/icons/icons';
 import { color, radius, touchTarget } from '../../theme/tokens';
 import { textStyle } from '../../theme/typography';
@@ -134,7 +134,7 @@ function AddContactModal({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onCancel}>
+    <AppModal visible={visible} animationType="slide" onRequestClose={onCancel}>
       <View style={modalStyles.backdrop}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onCancel} accessibilityElementsHidden />
         <View style={modalStyles.sheet}>
@@ -180,7 +180,7 @@ function AddContactModal({
           </Pressable>
         </View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 
