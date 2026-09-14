@@ -15,6 +15,8 @@ import { RootTabs } from './src/navigation/RootTabs';
 import { OnboardingFlow } from './src/screens/onboarding/OnboardingFlow';
 import { useAppStore } from './src/state/store';
 import { useTourStore } from './src/state/tourStore';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
+import { WebPhoneFrame } from './src/components/WebPhoneFrame';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -59,10 +61,14 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <SafeAreaProvider>
-        {setupComplete ? <RootTabs /> : <OnboardingFlow onComplete={handleOnboardingComplete} />}
-        <StatusBar style="dark" />
-      </SafeAreaProvider>
+      <WebPhoneFrame>
+        <SafeAreaProvider>
+          <ErrorBoundary>
+            {setupComplete ? <RootTabs /> : <OnboardingFlow onComplete={handleOnboardingComplete} />}
+          </ErrorBoundary>
+          <StatusBar style="dark" />
+        </SafeAreaProvider>
+      </WebPhoneFrame>
     </GestureHandlerRootView>
   );
 }
