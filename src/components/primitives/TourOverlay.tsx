@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { AccessibilityRole, Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityRole, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Defs, Mask, Rect } from 'react-native-svg';
 import Animated, {
   useAnimatedProps,
@@ -17,6 +17,7 @@ import { color, radius } from '../../theme/tokens';
 import { useTourStore } from '../../state/tourStore';
 import { TOUR_STEPS } from '../../data/tour';
 import { Spot } from '../../state/tourStore';
+import { getTourCanvasSize } from '../../hooks/useTourTarget';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
@@ -79,7 +80,7 @@ export function TourOverlay({ onAct }: { onAct: (act: string) => void }) {
   if (stepIndex === null) return null;
 
   const step = TOUR_STEPS[stepIndex];
-  const { width, height } = Dimensions.get('window');
+  const { width, height } = getTourCanvasSize();
   const isLast = stepIndex === TOUR_STEPS.length - 1;
 
   return (

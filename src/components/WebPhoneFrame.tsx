@@ -1,10 +1,11 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import { SafeAreaFrameContext, SafeAreaInsetsContext, SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { color } from '../theme/tokens';
 import { useBatteryLevel } from '../hooks/useBatteryLevel';
+import { setTourFrame } from '../hooks/useTourTarget';
 
 // Where AppModal.web portals its content (sheets, alerts, the calendar). Must be a DOM node
 // that's the LAST child inside `frame` below, so anything portaled into it paints above the
@@ -93,8 +94,16 @@ export function WebPhoneFrame({ children }: WebPhoneFrameProps) {
   const clock = useClock();
   const batteryLevel = useBatteryLevel();
   const [portalNode, setPortalNode] = useState<HTMLElement | null>(null);
+  const frameRef = useRef<View>(null);
 
   const isFramed = Platform.OS === 'web' && width >= FRAME_THRESHOLD_WIDTH;
+
+  // The tour overlay needs to measure its spotlight targets in the same pre-scale logical
+  // coordinate space it draws its mask in — see useTourTarget.ts.
+  useEffect(() => {
+    setTourFrame(isFramed ? frameRef.current : null, isFramed ? { width: FRAME_WIDTH, height: FRAME_HEIGHT } : null);
+    return () => setTourFrame(null, null);
+  }, [isFramed]);
 
   if (!isFramed) {
     return <SafeAreaProvider>{children}</SafeAreaProvider>;
@@ -107,7 +116,7 @@ export function WebPhoneFrame({ children }: WebPhoneFrameProps) {
 
   return (
     <View style={styles.backdrop}>
-      <View style={[styles.frame, { width: FRAME_WIDTH, height: FRAME_HEIGHT, transform: [{ scale }] }]}>
+      <View ref={frameRef} style={[styles.frame, { width: FRAME_WIDTH, height: FRAME_HEIGHT, transform: [{ scale }] }]}>
         {/*
           react-native-safe-area-context's own <SafeAreaProvider> re-measures real CSS
           env(safe-area-inset-*) on mount (0 on an ordinary browser, no matter what

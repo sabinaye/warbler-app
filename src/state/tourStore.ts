@@ -1,8 +1,7 @@
 import { create } from 'zustand';
-import { Dimensions } from 'react-native';
 
 import { TOUR_STEPS } from '../data/tour';
-import { measureTourTarget, MeasuredRect } from '../hooks/useTourTarget';
+import { getTourCanvasSize, measureTourTarget, MeasuredRect } from '../hooks/useTourTarget';
 
 export type Spot = MeasuredRect & { radius: number };
 
@@ -72,7 +71,7 @@ export const useTourStore = create<TourState>((set, get) => ({
     if (contentRect) spots.push(pad(contentRect, 8, 16));
     if (tabRect) spots.push(pad(tabRect, 3, 12));
 
-    const screenHeight = Dimensions.get('window').height;
+    const screenHeight = getTourCanvasSize().height;
     const cardOnTop = contentRect ? contentRect.y + contentRect.height / 2 > screenHeight * 0.48 : false;
 
     set({ spots: spots.length ? spots : null, cardOnTop });
